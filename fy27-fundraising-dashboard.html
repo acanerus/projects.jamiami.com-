@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY27 Fundraising Dashboard — JA Miami Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  .back-link {
+    display: block;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 24px 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--brand-deep);
+    text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
+  :root{
+    color-scheme: light;
+    --page:      #f7f7f3;
+    --card:      #ffffff;
+    --card-alt:  #fbfbf8;
+    --ink:       #12181a;
+    --ink-2:     #4c5c59;
+    --ink-3:     #8b9794;
+    --hair:      #dee3e0;
+    --hair-strong: #c7cec9;
+
+    --brand:      #285f74;
+    --brand-deep: #163a47;
+    --brand-tint: #e7eff1;
+
+    --s1: #2a78d6; /* Individual Giving */
+    --s2: #eb6834; /* Grants */
+    --s3: #1baf7a; /* Corporate Contributions */
+    --s4: #c98500; /* Events (deepened for light-surface contrast) */
+    --s5: #c2447c; /* Finance Park (deepened for light-surface contrast) */
+    --unalloc: #b9c2bf;
+
+    --good: #0ca30c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:      #0e1414;
+      --card:      #161d1e;
+      --card-alt:  #131919;
+      --ink:       #f4f6f5;
+      --ink-2:     #b9c4c1;
+      --ink-3:     #7f8b88;
+      --hair:      #2a3232;
+      --hair-strong: #394341;
+
+      --brand:      #5aa3bb;
+      --brand-deep: #0e2830;
+      --brand-tint: #16272c;
+
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --s4: #c98500;
+      --s5: #d55181;
+      --unalloc: #3d4746;
+
+      --good: #2fce2f;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:      #0e1414;
+    --card:      #161d1e;
+    --card-alt:  #131919;
+    --ink:       #f4f6f5;
+    --ink-2:     #b9c4c1;
+    --ink-3:     #7f8b88;
+    --hair:      #2a3232;
+    --hair-strong: #394341;
+
+    --brand:      #5aa3bb;
+    --brand-deep: #0e2830;
+    --brand-tint: #16272c;
+
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+    --unalloc: #3d4746;
+
+    --good: #2fce2f;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Libre Franklin", system-ui, sans-serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  .tabular{ font-variant-numeric: tabular-nums; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px 64px; }
+
+  /* ---------- Header / hero ---------- */
+  .hero{
+    background: linear-gradient(180deg, var(--brand-deep) 0%, var(--brand) 130%);
+    color:#fdfdfb;
+    padding:36px 24px 30px;
+  }
+  .hero-inner{ max-width:1180px; margin:0 auto; }
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:.09em; font-size:12px; font-weight:600;
+    color:#cfe3e9; margin:0 0 6px;
+  }
+  .hero h1{ font-size:30px; font-weight:800; color:#ffffff; }
+  .hero-sub{ margin-top:6px; font-size:15px; color:#d7e6ea; max-width:640px; }
+  .hero-meta{ margin-top:18px; display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:#cfe3e9; }
+  .hero-meta b{ color:#fff; font-weight:600; }
+
+  .hero-grid{ margin-top:26px; display:grid; grid-template-columns: minmax(260px,340px) 1fr; gap:28px; align-items:center; }
+  @media (max-width:780px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  .hero-figure .label{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#bcd6dc; }
+  .hero-figure .value{ font-size:44px; font-weight:800; color:#fff; line-height:1.05; margin-top:4px; }
+  .hero-figure .of{ font-size:15px; color:#cfe3e9; margin-top:2px; }
+
+  .drive{ position:relative; }
+  .drive-track{ position:relative; height:14px; border-radius:7px; background:rgba(255,255,255,.16); overflow:visible; }
+  .drive-fill{ position:absolute; inset:0 auto 0 0; border-radius:7px; background:linear-gradient(90deg,#7fd0c9,#e9c76b); width:0%; transition:width .6s ease; }
+  .drive-marks{ display:flex; justify-content:space-between; margin-top:8px; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:#a9c9d0; }
+  .drive-marks span{ position:relative; width:1px; text-align:center; overflow:visible; }
+  .drive-marks span::before{ content:""; position:absolute; top:-16px; left:0; width:1px; height:6px; background:rgba(255,255,255,.35); }
+  .drive-pct{ position:absolute; top:-26px; transform:translateX(-50%); font-size:11px; font-weight:700; color:#fff; background:var(--brand-deep); border:1px solid rgba(255,255,255,.4); padding:2px 7px; border-radius:20px; white-space:nowrap; }
+
+  /* ---------- Section heads ---------- */
+  .section{ margin-top:44px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+  .section-head h2{ font-size:19px; font-weight:700; }
+  .section-head .hint{ font-size:12.5px; color:var(--ink-3); }
+
+  /* ---------- Composition bar ---------- */
+  .comp-card{ background:var(--card); border:1px solid var(--hair); border-radius:12px; padding:22px 24px 20px; }
+  .comp-bar{ display:grid; gap:2px; height:38px; border-radius:9px; overflow:hidden; background:var(--hair); }
+  .comp-seg{ background:var(--seg,var(--brand)); cursor:pointer; min-width:2px; }
+  .comp-legend{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px 18px; margin-top:20px; }
+  .comp-item{ display:flex; flex-direction:column; gap:5px; font-size:12.5px; }
+  .comp-item .top{ display:flex; align-items:center; gap:8px; }
+  .comp-dot{ width:10px; height:10px; border-radius:3px; flex:none; background:var(--seg,var(--brand)); }
+  .comp-item .lbl{ color:var(--ink-2); font-weight:600; }
+  .comp-item .val{ color:var(--ink); font-weight:700; white-space:nowrap; padding-left:18px; }
+  .comp-item.muted .lbl, .comp-item.muted .val{ color:var(--ink-3); font-weight:600; }
+
+  /* ---------- Compact stat cards (core buckets) ---------- */
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; }
+  .card{ background:var(--card); border:1px solid var(--hair); border-radius:12px; padding:18px 18px 17px; border-left:4px solid var(--accent, var(--brand)); }
+  .card .name{ font-size:13.5px; font-weight:700; color:var(--ink); }
+  .card .desc{ font-size:11.5px; color:var(--ink-3); margin-top:2px; min-height:14px; }
+  .card .raised{ font-size:27px; font-weight:800; margin-top:12px; letter-spacing:-.01em; }
+  .card .goal-of{ font-size:12px; color:var(--ink-2); margin-top:1px; }
+  .track{ height:7px; border-radius:4px; background:var(--card-alt); border:1px solid var(--hair); margin-top:11px; overflow:hidden; }
+  .fill{ height:100%; border-radius:4px; background:var(--accent, var(--brand)); width:0%; }
+  .card .stat-row{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 10px; margin-top:8px; font-size:11.5px; color:var(--ink-2); }
+  .card .stat-row b{ color:var(--ink); font-weight:700; }
+
+  /* ---------- Events full section ---------- */
+  .panel{ background:var(--card); border:1px solid var(--hair); border-radius:14px; padding:24px 26px 22px; border-left:5px solid var(--accent,var(--brand)); }
+  .panel-top{ display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; }
+  .panel-title{ font-size:20px; font-weight:800; }
+  .panel-desc{ font-size:13px; color:var(--ink-2); margin-top:3px; max-width:520px; }
+  .stat-strip{ display:flex; gap:26px; flex-wrap:wrap; margin-top:6px; }
+  .stat-strip .s-label{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); }
+  .stat-strip .s-value{ font-size:22px; font-weight:800; margin-top:2px; }
+  .panel .track{ margin-top:18px; height:9px; }
+
+  table.ev{ width:100%; border-collapse:collapse; margin-top:20px; font-size:13px; }
+  table.ev th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-3); font-weight:600; padding:0 10px 8px 0; border-bottom:1px solid var(--hair); }
+  table.ev td{ padding:11px 10px 11px 0; border-bottom:1px solid var(--hair); vertical-align:middle; }
+  table.ev tr:last-child td{ border-bottom:none; }
+  table.ev td.name{ font-weight:700; color:var(--ink); }
+  table.ev td.name .tag{ display:block; font-weight:500; font-size:11px; color:var(--ink-3); margin-top:1px; }
+  table.ev td.amt{ text-align:right; white-space:nowrap; }
+  table.ev td.share{ width:34%; }
+  .mini-track{ height:7px; border-radius:4px; background:var(--card-alt); border:1px solid var(--hair); overflow:hidden; display:flex; align-items:center; gap:9px; }
+  .mini-fill{ height:100%; border-radius:4px; background:var(--s4); }
+  .mini-wrap{ display:flex; align-items:center; gap:10px; }
+  .mini-pct{ font-size:11px; color:var(--ink-3); white-space:nowrap; width:34px; text-align:right; }
+
+  /* ---------- Finance Park spotlight ---------- */
+  .fp{ background:linear-gradient(135deg, var(--brand-tint) 0%, var(--card) 62%); border-left:5px solid var(--s5); }
+  .fp .eyebrow2{ display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--s5); background:color-mix(in srgb, var(--s5) 14%, transparent); padding:3px 9px; border-radius:20px; margin-bottom:8px; }
+
+  /* ---------- Trend chart ---------- */
+  .chart-card{ background:var(--card); border:1px solid var(--hair); border-radius:12px; padding:20px 20px 8px; }
+  .chart-scroll{ overflow-x:auto; }
+  svg.trend{ display:block; }
+  .grid-line{ stroke:var(--hair); stroke-width:1; }
+  .goal-line{ stroke:var(--ink-3); stroke-width:1.4; stroke-dasharray:4 4; }
+  .axis-label{ fill:var(--ink-3); font-size:10.5px; font-family:"Source Sans 3", sans-serif; }
+  .goal-label{ fill:var(--ink-2); font-size:10.5px; font-weight:600; font-family:"Source Sans 3", sans-serif; }
+  .trend-area{ fill:url(#areaFill); }
+  .trend-line{ fill:none; stroke:var(--brand); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+  .trend-dot{ fill:var(--card); stroke:var(--brand); stroke-width:2.5; }
+  .trend-dot.hot{ fill:var(--brand); }
+
+  .tooltip{
+    position:absolute; pointer-events:none;
+    background:var(--brand-deep); color:#fff;
+    font-size:11.5px; line-height:1.4;
+    padding:7px 10px; border-radius:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    transform:translate(-50%,-115%);
+    white-space:nowrap;
+    opacity:0; transition:opacity .12s ease;
+    z-index:5;
+  }
+  .tooltip b{ font-weight:700; }
+  .tooltip .t-week{ color:#bcd6dc; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; }
+
+  table.log{ width:100%; border-collapse:collapse; margin-top:16px; font-size:12.5px; }
+  table.log caption{ text-align:left; font-size:11.5px; color:var(--ink-3); margin-bottom:6px; }
+  table.log th, table.log td{ text-align:right; padding:7px 9px; border-bottom:1px solid var(--hair); }
+  table.log th:first-child, table.log td:first-child{ text-align:left; }
+  table.log th{ color:var(--ink-3); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.03em; }
+  table.log td.total{ font-weight:700; color:var(--ink); }
+
+  /* ---------- Footer ---------- */
+  .foot{ margin-top:44px; padding-top:18px; border-top:1px solid var(--hair); font-size:12px; color:var(--ink-3); display:grid; gap:6px; }
+  .foot b{ color:var(--ink-2); }
+
+  @media (prefers-reduced-motion: reduce){ .drive-fill, .fill{ transition:none; } }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="/">← All Projects</a>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Junior Achievement of Greater Miami &middot; Finance Committee</p>
+    <h1>FY27 Fundraising Dashboard</h1>
+    <p class="hero-sub">Tracking progress toward the board&rsquo;s FY27 goal, by revenue bucket, week over week &mdash; reviewed at every committee meeting per Lourdes de la Mata Little&rsquo;s Aug&nbsp;28 memo.</p>
+    <div class="hero-meta">
+      <span>Week ending <b id="metaWeek">&mdash;</b></span>
+      <span>Board goal <b>$3,250,000</b></span>
+      <span>Revenue buckets <b>5</b></span>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-figure">
+        <div class="label">Raised to date</div>
+        <div class="value tabular" id="heroRaised">$0</div>
+        <div class="of">of $3,250,000 &middot; <span id="heroPct">0%</span> to goal</div>
+      </div>
+      <div class="drive">
+        <div class="drive-track">
+          <div class="drive-fill" id="driveFill"></div>
+          <div class="drive-pct" id="drivePct" style="left:0%;">0%</div>
+        </div>
+        <div class="drive-marks"><span>Kickoff</span><span>Midfield</span><span>Red Zone</span><span>Goal</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Where the $3,250,000 goal comes from</h2>
+      <span class="hint">Each segment sized to its share of the board goal</span>
+    </div>
+    <div class="comp-card">
+      <div class="comp-bar" id="compBar"></div>
+      <div class="comp-legend" id="compLegend"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Core fundraising</h2>
+      <span class="hint">Individual, grants &amp; corporate &mdash; single-line buckets</span>
+    </div>
+    <div class="cards" id="coreGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Events</h2></div>
+    <div class="panel" id="eventsPanel" style="border-left-color:var(--s4);"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>JA Finance Park</h2></div>
+    <div class="panel fp" id="fpPanel"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Weekly progress</h2>
+      <span class="hint">Cumulative dollars raised across all buckets</span>
+    </div>
+    <div class="chart-card">
+      <div class="chart-scroll" style="position:relative;">
+        <svg class="trend" id="trendSvg" viewBox="0 0 920 260" preserveAspectRatio="xMinYMid meet">
+          <defs>
+            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--brand)" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="var(--brand)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g id="gridLayer"></g>
+          <line id="goalLine" class="goal-line" x1="0" y1="0" x2="0" y2="0"/>
+          <text id="goalLabel" class="goal-label"></text>
+          <path id="areaPath" class="trend-area" d=""/>
+          <path id="linePath" class="trend-line" d=""/>
+          <g id="dotLayer"></g>
+          <g id="hoverLayer"></g>
+        </svg>
+        <div class="tooltip" id="tooltip"><div class="t-week" id="ttWeek"></div><div id="ttBody"></div></div>
+      </div>
+      <table class="log" id="logTable">
+        <caption>Weekly log &mdash; raised that week vs. running total (accessible table view of the chart above)</caption>
+        <thead><tr><th>Week ending</th><th>Raised this week</th><th>Cumulative</th><th>% to goal</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div><b>Goal source:</b> FY27 goals of $2.8M (by bucket) and the addition of JA Finance Park ($450,000) come from Lourdes de la Mata Little&rsquo;s Aug&nbsp;28, 2026 &ldquo;Finance Committee Addition&rdquo; memo. Finance Park is new for FY27, opening in Miami-Dade County Public Schools in 2026.</div>
+    <div><b>Unallocated goal:</b> the five bucket goals sum to $3,057,953 &mdash; $192,047 short of the $3,250,000 board goal. That gap existed in the original memo (stated $2.8M vs. summed buckets) and is shown as its own grey segment above rather than hidden.</div>
+    <div><b>Micro Events &amp; Peer-to-Peer:</b> shown at $195,000, the implied balance of the $880,000 Events goal after the five named events. Per the memo this line is still being set: &ldquo;Balance, read analyze and wait.&rdquo;</div>
+    <div id="updatedLine"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------------------------------------------------------------
+  // DATA — this is the only section that needs to change week to week.
+  // Add a new object to WEEKLY_LOG with that week's dollars RAISED
+  // (not cumulative) per bucket key. Everything else recalculates.
+  // ---------------------------------------------------------------
+  const GOAL_TOTAL = 3250000;
+
+  const BUCKETS = [
+    { key:'individual',  name:'Individual Giving',       goal:562842, accent:'var(--s1)' },
+    { key:'grants',      name:'Grants',                  goal:885000, accent:'var(--s2)' },
+    { key:'corporate',   name:'Corporate Contributions', goal:280111, accent:'var(--s3)' },
+    { key:'events',      name:'Events',                  goal:880000, accent:'var(--s4)',
+      desc:'6 events & campaigns',
+      subitems:[
+        ['Golf Tournament', 270000],
+        ['Stock Market Challenge', 225000],
+        ['Play for JA', 125000],
+        ['JA Rising Women', 40000],
+        ['Pickleball', 25000],
+        ['Micro Events & Peer-to-Peer', 195000, 'goal pending committee review']
+      ]
+    },
+    { key:'financepark', name:'JA Finance Park',         goal:450000, accent:'var(--s5)',
+      desc:'New for FY27 — opens in M-DCPS in 2026',
+      blurb:'A hands-on financial-literacy simulation opening in Miami-Dade County Public Schools in 2026 &mdash; the nation&rsquo;s third-largest school district. Brand new to the FY27 goal, on top of the original $2.8M.' },
+  ];
+  const CORE_KEYS = ['individual','grants','corporate'];
+
+  const WEEKLY_LOG = [
+    { week:'2026-09-04', raised:{ individual:0, grants:0, corporate:0, events:0, financepark:0 } },
+  ];
+
+  // ---------------------------------------------------------------
+  // Rendering — no edits needed below this line.
+  // ---------------------------------------------------------------
+  const fmtUSD = n => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtCompact = n => {
+    if (Math.abs(n) >= 1000000) return '$' + (n/1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+    if (Math.abs(n) >= 1000) return '$' + Math.round(n/1000) + 'k';
+    return '$' + Math.round(n);
+  };
+  const fmtDate = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+
+  let running = {}; BUCKETS.forEach(b => running[b.key] = 0);
+  const cumWeekly = WEEKLY_LOG.map(w => {
+    let weekTotal = 0;
+    BUCKETS.forEach(b => { running[b.key] += (w.raised[b.key]||0); weekTotal += (w.raised[b.key]||0); });
+    return { week:w.week, weekTotal, cumTotal: Object.values(running).reduce((a,c)=>a+c,0), byBucket: {...running} };
+  });
+  const latest = cumWeekly[cumWeekly.length-1];
+  const totalRaised = latest.cumTotal;
+  const bucketGoalSum = BUCKETS.reduce((a,b)=>a+b.goal,0);
+  const unallocated = Math.max(0, GOAL_TOTAL - bucketGoalSum);
+  const byKey = k => BUCKETS.find(b=>b.key===k);
+
+  // ---- Hero ----
+  document.getElementById('metaWeek').textContent = fmtDate(latest.week);
+  document.getElementById('heroRaised').textContent = fmtUSD(totalRaised);
+  const overallPct = Math.min(100, (totalRaised / GOAL_TOTAL) * 100);
+  document.getElementById('heroPct').textContent = overallPct.toFixed(1) + '%';
+  document.getElementById('driveFill').style.width = overallPct + '%';
+  const pctBadge = document.getElementById('drivePct');
+  pctBadge.style.left = Math.min(97, Math.max(3, overallPct)) + '%';
+  pctBadge.textContent = overallPct.toFixed(1) + '%';
+  document.getElementById('updatedLine').innerHTML = '<b>Updated:</b> week ending ' + fmtDate(latest.week) + ' &middot; refreshed ahead of each committee meeting.';
+
+  // ---- Composition bar ----
+  const compSegs = BUCKETS.map(b => ({ label:b.name, value:b.goal, color:b.accent, muted:false }))
+    .concat(unallocated > 0 ? [{ label:'Unallocated', value:unallocated, color:'var(--unalloc)', muted:true }] : []);
+  const compBar = document.getElementById('compBar');
+  compBar.style.gridTemplateColumns = compSegs.map(s => s.value + 'fr').join(' ');
+  const tooltip = document.getElementById('tooltip'), ttWeek = document.getElementById('ttWeek'), ttBody = document.getElementById('ttBody');
+  compSegs.forEach(s => {
+    const seg = document.createElement('div');
+    seg.className = 'comp-seg';
+    seg.style.setProperty('--seg', s.color);
+    seg.title = s.label + ': ' + fmtUSD(s.value) + ' (' + ((s.value/GOAL_TOTAL)*100).toFixed(1) + '%)';
+    seg.addEventListener('mouseenter', (e) => {
+      const rect = seg.getBoundingClientRect(), host = compBar.getBoundingClientRect();
+      tooltip.style.left = (rect.left - host.left + rect.width/2) + 'px';
+      tooltip.style.top = '0px';
+      ttWeek.textContent = s.label;
+      ttBody.innerHTML = '<b>' + fmtUSD(s.value) + '</b> &middot; ' + ((s.value/GOAL_TOTAL)*100).toFixed(1) + '% of goal';
+      tooltip.style.opacity = '1';
+    });
+    seg.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
+    compBar.appendChild(seg);
+  });
+  const compLegend = document.getElementById('compLegend');
+  compSegs.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'comp-item' + (s.muted ? ' muted' : '');
+    item.innerHTML = `<span class="top"><span class="comp-dot" style="--seg:${s.color}"></span><span class="lbl">${s.label}</span></span><span class="val tabular">${fmtUSD(s.value)} &middot; ${((s.value/GOAL_TOTAL)*100).toFixed(1)}%</span>`;
+    compLegend.appendChild(item);
+  });
+
+  // ---- Core fundraising cards ----
+  const coreGrid = document.getElementById('coreGrid');
+  CORE_KEYS.forEach(key => {
+    const b = byKey(key);
+    const raised = latest.byBucket[b.key] || 0;
+    const pct = Math.min(100, (raised / b.goal) * 100);
+    const remaining = Math.max(0, b.goal - raised);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--accent', b.accent);
+    card.innerHTML = `
+      <div class="name">${b.name}</div>
+      <div class="desc">&nbsp;</div>
+      <div class="raised tabular">${fmtUSD(raised)}</div>
+      <div class="goal-of">of ${fmtUSD(b.goal)} goal</div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="stat-row"><span>${pct.toFixed(1)}% to goal</span><b>${fmtUSD(remaining)} to go</b></div>
+    `;
+    coreGrid.appendChild(card);
+  });
+
+  // ---- Events panel ----
+  (function(){
+    const b = byKey('events');
+    const raised = latest.byBucket.events || 0;
+    const pct = Math.min(100, (raised / b.goal) * 100);
+    const remaining = Math.max(0, b.goal - raised);
+    const rows = b.subitems.map(([n,g,note]) => {
+      const share = (g / b.goal) * 100;
+      return `<tr>
+        <td class="name">${n}${note ? `<span class="tag">${note}</span>` : ''}</td>
+        <td class="amt tabular">${fmtUSD(g)}</td>
+        <td class="share"><div class="mini-wrap"><div class="mini-track"><div class="mini-fill" style="width:${share}%"></div></div><span class="mini-pct tabular">${share.toFixed(0)}%</span></div></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('eventsPanel').innerHTML = `
+      <div class="panel-top">
+        <div>
+          <div class="panel-title">Events</div>
+          <div class="panel-desc">${b.desc} rolling up to one $880,000 goal &mdash; the largest share of the board target after Grants.</div>
+        </div>
+        <div class="stat-strip">
+          <div><div class="s-label">Raised</div><div class="s-value tabular">${fmtUSD(raised)}</div></div>
+          <div><div class="s-label">Goal</div><div class="s-value tabular">${fmtUSD(b.goal)}</div></div>
+          <div><div class="s-label">Remaining</div><div class="s-value tabular">${fmtUSD(remaining)}</div></div>
+        </div>
+      </div>
+      <div class="track"><div class="fill" style="width:${pct}%;background:var(--s4);"></div></div>
+      <table class="ev">
+        <thead><tr><th>Event / campaign</th><th style="text-align:right;">Goal</th><th>Share of Events goal</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  })();
+
+  // ---- Finance Park spotlight ----
+  (function(){
+    const b = byKey('financepark');
+    const raised = latest.byBucket.financepark || 0;
+    const pct = Math.min(100, (raised / b.goal) * 100);
+    const remaining = Math.max(0, b.goal - raised);
+    document.getElementById('fpPanel').innerHTML = `
+      <span class="eyebrow2">New for FY27</span>
+      <div class="panel-top">
+        <div>
+          <div class="panel-title">JA Finance Park</div>
+          <div class="panel-desc">${b.blurb}</div>
+        </div>
+        <div class="stat-strip">
+          <div><div class="s-label">Raised</div><div class="s-value tabular">${fmtUSD(raised)}</div></div>
+          <div><div class="s-label">Goal</div><div class="s-value tabular">${fmtUSD(b.goal)}</div></div>
+          <div><div class="s-label">Remaining</div><div class="s-value tabular">${fmtUSD(remaining)}</div></div>
+        </div>
+      </div>
+      <div class="track"><div class="fill" style="width:${pct}%;background:var(--s5);"></div></div>
+    `;
+  })();
+
+  // ---- Weekly log table ----
+  const logBody = document.getElementById('logBody');
+  cumWeekly.forEach(w => {
+    const pct = (w.cumTotal / GOAL_TOTAL) * 100;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${fmtDate(w.week)}</td><td class="tabular">${fmtUSD(w.weekTotal)}</td><td class="tabular total">${fmtUSD(w.cumTotal)}</td><td class="tabular">${pct.toFixed(1)}%</td>`;
+    logBody.appendChild(tr);
+  });
+
+  // ---- Trend chart (hand-built SVG line/area, with hover) ----
+  const svg = document.getElementById('trendSvg');
+  const W = 920, H = 260, padL = 54, padR = 24, padT = 20, padB = 34;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const MIN_SLOTS = Math.max(8, cumWeekly.length + 4);
+  const xFor = i => padL + (MIN_SLOTS === 1 ? 0 : (i / (MIN_SLOTS - 1)) * plotW);
+  const yFor = v => padT + plotH - (Math.min(v, GOAL_TOTAL) / GOAL_TOTAL) * plotH;
+
+  const gridLayer = document.getElementById('gridLayer');
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = padT + plotH - f * plotH;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('class','grid-line');
+    line.setAttribute('x1', padL); line.setAttribute('x2', W - padR);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    gridLayer.appendChild(line);
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('class','axis-label');
+    label.setAttribute('x', padL - 8); label.setAttribute('y', y + 3);
+    label.setAttribute('text-anchor','end');
+    label.textContent = fmtCompact(f * GOAL_TOTAL);
+    gridLayer.appendChild(label);
+  });
+
+  const goalY = yFor(GOAL_TOTAL);
+  const goalLine = document.getElementById('goalLine');
+  goalLine.setAttribute('x1', padL); goalLine.setAttribute('x2', W - padR);
+  goalLine.setAttribute('y1', goalY); goalLine.setAttribute('y2', goalY);
+  const goalLabel = document.getElementById('goalLabel');
+  goalLabel.setAttribute('x', W - padR); goalLabel.setAttribute('y', goalY - 6);
+  goalLabel.setAttribute('text-anchor','end');
+  goalLabel.textContent = 'Goal: ' + fmtCompact(GOAL_TOTAL);
+
+  for (let i = 0; i < MIN_SLOTS; i++) {
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('class','axis-label');
+    label.setAttribute('x', xFor(i)); label.setAttribute('y', H - 10);
+    label.setAttribute('text-anchor','middle');
+    label.textContent = cumWeekly[i] ? fmtDate(cumWeekly[i].week).replace(/, \d{4}/, '') : '';
+    gridLayer.appendChild(label);
+  }
+
+  let pathD = '', areaD = '';
+  cumWeekly.forEach((w, i) => { pathD += (i === 0 ? 'M' : 'L') + xFor(i) + ',' + yFor(w.cumTotal) + ' '; });
+  if (cumWeekly.length === 1) {
+    const x0 = xFor(0), y0 = yFor(cumWeekly[0].cumTotal);
+    pathD = `M${x0},${y0} L${x0},${y0}`;
+    areaD = `M${x0},${padT+plotH} L${x0},${y0} L${x0},${padT+plotH} Z`;
+  } else {
+    areaD = 'M' + xFor(0) + ',' + (padT+plotH) + ' ';
+    cumWeekly.forEach((w,i) => { areaD += 'L' + xFor(i) + ',' + yFor(w.cumTotal) + ' '; });
+    areaD += 'L' + xFor(cumWeekly.length-1) + ',' + (padT+plotH) + ' Z';
+  }
+  document.getElementById('linePath').setAttribute('d', pathD);
+  document.getElementById('areaPath').setAttribute('d', areaD);
+
+  const dotLayer = document.getElementById('dotLayer');
+  cumWeekly.forEach((w,i) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('class','trend-dot');
+    c.setAttribute('cx', xFor(i)); c.setAttribute('cy', yFor(w.cumTotal)); c.setAttribute('r', 5);
+    dotLayer.appendChild(c);
+  });
+
+  const hoverLayer = document.getElementById('hoverLayer');
+  cumWeekly.forEach((w,i) => {
+    const hit = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx', xFor(i)); hit.setAttribute('cy', yFor(w.cumTotal)); hit.setAttribute('r', 14);
+    hit.setAttribute('fill', 'transparent');
+    hit.style.cursor = 'pointer';
+    hit.addEventListener('mouseenter', () => {
+      dotLayer.children[i].classList.add('hot');
+      const rect = svg.getBoundingClientRect();
+      const scale = rect.width / W;
+      tooltip.style.left = (xFor(i) * scale) + 'px';
+      tooltip.style.top = (yFor(w.cumTotal) * scale) + 'px';
+      ttWeek.textContent = 'Week ending ' + fmtDate(w.week);
+      ttBody.innerHTML = 'Cumulative: <b>' + fmtUSD(w.cumTotal) + '</b><br>Raised that week: <b>' + fmtUSD(w.weekTotal) + '</b><br>' + ((w.cumTotal/GOAL_TOTAL)*100).toFixed(1) + '% to goal';
+      tooltip.style.opacity = '1';
+    });
+    hit.addEventListener('mouseleave', () => {
+      dotLayer.children[i].classList.remove('hot');
+      tooltip.style.opacity = '0';
+    });
+    hoverLayer.appendChild(hit);
+  });
+})();
+</script>
+
+</body>
+</html>
