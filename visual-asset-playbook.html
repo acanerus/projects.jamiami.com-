@@ -1,559 +1,470 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JAGM Visual Asset Playbook — JA Miami Projects</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Visual Asset Playbook</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-  :root{
-    --ink:#14213D;
-    --ink-soft:#4A5568;
-    --paper:#F4F6F9;
-    --surface:#FFFFFF;
-    --line:#DCE1E9;
-    --accent:#C7891F;
-    --accent-ink:#5C3D0B;
-    --accent-soft:#FBEEDA;
-    --teal:#1F6E5C;
-    --teal-soft:#E4F2EE;
-    --warn:#A3341F;
-    --warn-soft:#FBE9E4;
-    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: "IBM Plex Sans", -apple-system, Segoe UI, sans-serif;
-    --display: "Barlow Condensed", var(--sans);
+  :root {
+    --paper: #FDFEFE;
+    --paper-alt: #F3F6F6;
+    --ink: #17262B;
+    --ink-soft: #5C6C70;
+    --ink-faint: #8B9A9D;
+    --line: #DAE1E2;
+    --accent: #2B6E85;
+    --accent-soft: #E4EEF1;
+    --accent-ink: #1B4552;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #12181A; --paper-alt: #1A2225; --ink: #E7EEEF; --ink-soft: #9AACAF;
+      --ink-faint: #647376; --line: #2C3739; --accent: #6FB6C9; --accent-soft: #1D3138;
+      --accent-ink: #C3E7EF; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12181A; --paper-alt: #1A2225; --ink: #E7EEEF; --ink-soft: #9AACAF;
+    --ink-faint: #647376; --line: #2C3739; --accent: #6FB6C9; --accent-soft: #1D3138;
+    --accent-ink: #C3E7EF; color-scheme: dark;
   }
 
-  *{box-sizing:border-box;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--sans);
-    margin:0;
-    padding-inline:16px;
-    padding-block:32px;
-    line-height:1.55;
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
   }
-  a{color:var(--teal);}
-  .wrap{max-width:840px;margin:0 auto;}
+  .wrap { max-width: 1360px; margin: 0 auto; padding: 44px 16px 80px; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 15px; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 12px;
+  }
+  h1 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: clamp(34px, 5.5vw, 46px);
+    letter-spacing: -0.01em; margin: 0 0 8px; text-wrap: balance;
+  }
+  .meta { font-size: 15px; color: var(--ink-faint); margin: 0 0 18px; }
+  .dek { font-size: 20px; color: var(--ink-soft); margin: 0 0 28px; max-width: 68ch; line-height: 1.5; }
 
-  .back-link{
-    display:block;
-    max-width:840px;
-    margin:0 auto 20px;
-    font-family:var(--sans);
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--teal);
-    text-decoration:none;
+  nav.toc {
+    display: flex; flex-wrap: wrap; gap: 4px 6px; padding: 14px 16px; margin: 0 0 44px;
+    background: var(--paper-alt); border: 1px solid var(--line); border-radius: 10px;
   }
-  .back-link:hover{text-decoration:underline;}
+  nav.toc a {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 14.5px;
+    color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 6px;
+  }
+  nav.toc a:hover { background: var(--paper); color: var(--ink); }
 
-  h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;letter-spacing:.2px;}
-  h1{font-size:clamp(2rem,6vw,2.9rem);margin:0 0 6px;line-height:1.05;}
-  h2{font-size:clamp(1.35rem,4vw,1.7rem);margin:0 0 12px;padding-top:2px;}
-  h3{font-size:1.05rem;margin:0 0 4px;text-transform:none;}
+  section { margin: 0 0 64px; scroll-margin-top: 20px; }
+  section:last-of-type { margin-bottom: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 22px; }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: var(--ink-faint);
+  }
+  h2 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .section-intro { font-size: 16.5px; color: var(--ink-soft); max-width: 70ch; line-height: 1.6; margin: 0 0 24px; }
 
-  .brandmark{
-    font-family:var(--display);
-    font-weight:700;
-    font-size:1.05rem;
-    letter-spacing:.06em;
-    color:var(--ink);
-    display:flex;align-items:center;gap:8px;
-    margin:0 0 16px;
-  }
-  .brandmark .sq{
-    width:22px;height:22px;border-radius:6px;
-    background:var(--accent);color:var(--surface);
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-weight:600;font-size:.68rem;letter-spacing:0;
-  }
-  .eyebrow{
-    font-family:var(--mono);
-    font-size:.72rem;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--teal);
-    margin:0 0 10px;
-  }
-  header.hero{
-    border-bottom:1px solid var(--line);
-    padding-bottom:24px;
-    margin-bottom:28px;
-  }
-  .org-line{color:var(--ink-soft);font-size:1.02rem;margin:0 0 18px;}
-  .meta-row{display:flex;flex-wrap:wrap;gap:8px;}
-  .pill{
-    font-family:var(--mono);
-    font-size:.72rem;
-    letter-spacing:.03em;
-    border:1px solid var(--line);
-    border-radius:100px;
-    padding:5px 12px;
-    color:var(--ink-soft);
-    background:var(--surface);
-    white-space:nowrap;
-  }
-  .pill.accent{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft);}
-  .pill.teal{border-color:var(--teal);color:var(--teal);background:var(--teal-soft);}
+  p { line-height: 1.65; font-size: 16px; }
 
-  nav.toc{
-    display:flex;flex-wrap:wrap;gap:6px 16px;
-    font-family:var(--mono);font-size:.78rem;
-    border:1px solid var(--line);
-    background:var(--surface);
-    border-radius:10px;
-    padding:14px 16px;
-    margin-bottom:32px;
+  /* ---- diagram (section 00) ---- */
+  .diagram-scroll {
+    overflow-x: auto; padding-bottom: 6px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
-  nav.toc a{color:var(--ink-soft);text-decoration:none;}
-  nav.toc a:hover{color:var(--teal);}
-  nav.toc span.n{color:var(--accent);margin-right:4px;}
+  svg.diagram { display: block; width: 100%; min-width: 900px; height: auto; }
+  figure { margin: 0; }
+  figcaption { margin-top: 18px; font-size: 16.5px; color: var(--ink-soft); line-height: 1.55; max-width: 68ch; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+  .node-box { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .node-box.final { stroke-width: 2.5; }
+  .node-decision { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  .node-dead { fill: var(--paper-alt); stroke: var(--ink-faint); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .lane-sep { stroke: var(--line); stroke-width: 1; }
+  .flow-line { stroke: var(--ink-soft); stroke-width: 2; fill: none; }
+  .arrowhead { fill: var(--ink-soft); }
+  .node-title { fill: var(--ink); font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 24px; }
+  .node-title.accent-text { fill: var(--accent-ink); }
+  .node-sub { fill: var(--ink-soft); font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 19px; }
+  .node-sub.strong { font-weight: 600; }
+  .lane-label { fill: var(--ink-soft); font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.07em; text-transform: uppercase; }
+  .branch-label { fill: var(--ink-soft); font-family: 'IBM Plex Sans', sans-serif; font-style: italic; font-size: 19px; }
 
-  section{margin-bottom:40px;scroll-margin-top:16px;}
-  p{margin:0 0 12px;color:var(--ink);max-width:65ch;}
-  .lede{color:var(--ink-soft);font-size:1.02rem;}
+  .tools-section { margin-top: 40px; }
+  .tools-boxes { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; }
+  .tool-box {
+    flex: 1 1 220px; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--paper);
+    padding: 18px 22px; text-align: center; display: flex; flex-direction: column; gap: 4px; justify-content: center;
+  }
+  .tool-title { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 22px; color: var(--ink); }
+  .tool-sub { font-size: 17px; color: var(--ink-soft); }
 
-  .callout{
-    border:1px solid var(--accent);
-    background:var(--accent-soft);
-    color:var(--accent-ink);
-    border-radius:12px;
-    padding:16px 18px;
-    margin-bottom:36px;
-    font-size:.94rem;
+  /* ---- step cards ---- */
+  .steps { display: flex; flex-direction: column; gap: 18px; }
+  .step-card {
+    border: 1.5px solid var(--line); border-radius: 12px; padding: 26px 28px; background: var(--paper);
   }
-  .callout strong{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:6px;letter-spacing:.2px;}
-  .callout ul{margin:8px 0 0;padding-left:20px;}
-  .callout li{margin-bottom:4px;}
+  .step-card.decision { border-color: var(--accent); background: var(--accent-soft); }
+  .step-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--ink-faint);
+    border: 1px solid var(--line); border-radius: 20px; padding: 3px 11px;
+  }
+  .step-card.decision .step-num { border-color: var(--accent); color: var(--accent-ink); }
+  .owner-pill {
+    font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 0.04em;
+    color: var(--ink-soft); background: var(--paper-alt); border-radius: 20px; padding: 4px 12px;
+  }
+  .step-card.decision .owner-pill { background: rgba(255,255,255,0.5); color: var(--accent-ink); }
+  h3.step-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 22px; margin: 0 0 14px; }
+  .step-fields { display: grid; grid-template-columns: 110px 1fr; gap: 8px 16px; }
+  .step-fields dt {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); padding-top: 2px;
+  }
+  .step-fields dd { margin: 0; font-size: 15.5px; color: var(--ink); line-height: 1.55; }
+  .fork-callout {
+    margin-top: 18px; padding: 16px 18px; background: var(--paper); border: 1px solid var(--accent);
+    border-radius: 8px; font-size: 15.5px; line-height: 1.6; color: var(--ink);
+  }
+  .fork-callout b { color: var(--accent-ink); }
 
-  .warn-box{
-    border:1px solid var(--warn);
-    background:var(--warn-soft);
-    border-radius:12px;
-    padding:16px 18px;
-    margin:18px 0 8px;
-  }
-  .warn-box strong{display:block;font-family:var(--display);font-size:1.1rem;color:var(--warn);margin-bottom:6px;}
-  .warn-box p{margin-bottom:8px;color:var(--ink);}
-  .warn-box ul{margin:8px 0 0;padding-left:20px;}
-  .warn-box li{margin-bottom:6px;}
+  /* ---- roles grid ---- */
+  .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .role-card { border: 1.5px solid var(--line); border-radius: 10px; padding: 20px 22px; }
+  .role-card h4 { font-family: 'Archivo', sans-serif; font-size: 16.5px; margin: 0 0 10px; }
+  .role-card ul { margin: 0; padding-left: 18px; font-size: 15px; color: var(--ink-soft); line-height: 1.6; }
+  .role-card li { margin-bottom: 4px; }
 
-  .pipeline{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:0;
-    border:1px solid var(--line);
-    border-radius:14px;
-    overflow:hidden;
-    background:var(--surface);
+  /* ---- naming convention anatomy ---- */
+  .anatomy { margin: 8px 0 26px; }
+  .anatomy-string {
+    display: flex; flex-wrap: wrap; gap: 2px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px; font-weight: 500; margin-bottom: 10px;
   }
-  .pipe-step{
-    padding:16px 12px;
-    border-right:1px solid var(--line);
-    position:relative;
+  .anatomy-seg { padding-bottom: 6px; border-bottom: 2.5px solid var(--ink-soft); color: var(--ink); }
+  .anatomy-seg.sep { border-bottom-color: transparent; color: var(--ink-faint); }
+  .anatomy-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 20px; margin-top: 18px; }
+  .anatomy-legend div { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
+  .anatomy-legend b { color: var(--ink); font-family: 'Archivo', sans-serif; font-size: 13.5px; letter-spacing: 0.03em; }
+  .example-box {
+    font-family: 'IBM Plex Mono', monospace; font-size: 15px; background: var(--paper-alt);
+    border-radius: 8px; padding: 14px 18px; color: var(--ink-soft); margin-top: 14px;
   }
-  .pipe-step:last-child{border-right:none;}
-  .pipe-step .num{
-    font-family:var(--mono);
-    font-size:.72rem;
-    color:var(--accent);
-    display:block;
-    margin-bottom:6px;
+  .example-box div + div { margin-top: 4px; }
+
+  /* ---- retention tiles ---- */
+  .retention-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .retention-tile { border: 1.5px solid var(--line); border-radius: 10px; padding: 22px 24px; }
+  .retention-tile .rt-tool { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); }
+  .retention-tile .rt-value { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; color: var(--ink); margin: 6px 0 6px; }
+  .retention-tile .rt-desc { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
+  .housekeeping { margin-top: 18px; font-size: 15px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* ---- checklists ---- */
+  .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .checklist-card { border: 1.5px solid var(--line); border-radius: 10px; padding: 20px 22px; }
+  .checklist-card h4 { font-family: 'Archivo', sans-serif; font-size: 16px; margin: 0 0 12px; }
+  .checklist-card ul { list-style: none; margin: 0; padding: 0; }
+  .checklist-card li {
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--ink);
+    margin-bottom: 10px; line-height: 1.5;
   }
-  .pipe-step .name{
-    font-family:var(--display);
-    font-size:1.05rem;
-    line-height:1.15;
-    margin-bottom:6px;
-  }
-  .pipe-step .desc{font-size:.78rem;color:var(--ink-soft);}
-  @media (max-width:720px){
-    .pipeline{grid-template-columns:1fr;}
-    .pipe-step{border-right:none;border-bottom:1px solid var(--line);}
-    .pipe-step:last-child{border-bottom:none;}
+  .checklist-card li::before {
+    content: ""; flex: 0 0 15px; width: 15px; height: 15px; margin-top: 2px;
+    border: 1.5px solid var(--ink-soft); border-radius: 3px;
   }
 
-  .stage{
-    border:1px solid var(--line);
-    background:var(--surface);
-    border-radius:14px;
-    padding:20px 22px;
-    margin-bottom:16px;
-  }
-  .stage-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .stage-head .num{
-    font-family:var(--mono);
-    font-size:.85rem;
-    color:var(--accent);
-    border:1px solid var(--accent);
-    border-radius:6px;
-    padding:1px 7px;
-  }
-  .grid-2{display:grid;grid-template-columns:100px 1fr;gap:6px 14px;font-size:.94rem;margin-top:10px;}
-  .grid-2 dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);padding-top:2px;}
-  .grid-2 dd{margin:0 0 8px;}
-  .grid-2 ul{margin:2px 0 0;padding-left:18px;}
-  .grid-2 li{margin-bottom:4px;}
-  @media (max-width:560px){
-    .grid-2{grid-template-columns:1fr;}
-    .grid-2 dt{padding-top:8px;}
-  }
-  code.tag{
-    font-family:var(--mono);
-    background:var(--teal-soft);
-    color:var(--teal);
-    border-radius:5px;
-    padding:1px 6px;
-    font-size:.85em;
+  footer.changelog {
+    border-top: 1px solid var(--line); padding-top: 20px; font-size: 13.5px; color: var(--ink-faint); line-height: 1.6;
   }
 
-  table{width:100%;border-collapse:collapse;font-size:.92rem;}
-  th{
-    text-align:left;font-family:var(--mono);font-size:.72rem;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
-    border-bottom:1px solid var(--line);padding:8px 10px;
-  }
-  td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;}
-  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);}
-  .table-wrap table{margin:0;}
-  .table-wrap th:first-child,.table-wrap td:first-child{padding-left:16px;}
-
-  .naming-example{
-    font-family:var(--mono);
-    background:var(--ink);
-    color:var(--paper);
-    border-radius:10px;
-    padding:14px 16px;
-    font-size:.88rem;
-    margin:10px 0 16px;
-    overflow-x:auto;
-    white-space:pre;
-  }
-
-  .checklists{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media (max-width:600px){.checklists{grid-template-columns:1fr;}}
-  .check-card{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:18px 20px;}
-  .check-card h3{font-family:var(--display);margin-bottom:12px;}
-  .check-item{display:flex;gap:10px;margin-bottom:10px;font-size:.92rem;align-items:flex-start;}
-  .box{
-    flex:none;width:16px;height:16px;margin-top:2px;
-    border:1.5px solid var(--ink-soft);border-radius:4px;
-  }
-
-  .icon{width:20px;height:20px;flex:none;display:inline-block;vertical-align:middle;}
-
-  .quick-links{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    margin-bottom:32px;
-  }
-  @media (max-width:640px){.quick-links{grid-template-columns:1fr 1fr;}}
-  .link-card{
-    display:flex;flex-direction:column;gap:8px;
-    border:1px dashed var(--line);
-    border-radius:12px;
-    background:var(--surface);
-    padding:14px 14px;
-    text-decoration:none;
-    color:var(--ink);
-    transition:border-color .15s ease;
-  }
-  .link-card:hover{border-color:var(--teal);}
-  .link-card .icon{color:var(--teal);}
-  .link-card .label{font-family:var(--display);font-size:1rem;line-height:1.1;}
-  .link-card .href{
-    font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);
-    border-top:1px solid var(--line);padding-top:8px;margin-top:2px;
-  }
-
-  .pipe-step .icon{color:var(--accent);margin-bottom:8px;}
-  .stage-head .icon{color:var(--accent);}
-
-  footer{
-    border-top:1px solid var(--line);
-    margin-top:44px;
-    padding-top:20px;
-    font-family:var(--mono);
-    font-size:.78rem;
-    color:var(--ink-soft);
-    display:flex;flex-wrap:wrap;gap:6px 22px;
+  @media (max-width: 640px) {
+    .step-fields { grid-template-columns: 1fr; }
+    .step-fields dt { padding-top: 10px; }
   }
 </style>
-</head>
-<body>
-
-<a class="back-link" href="/">← All Projects</a>
-
-<svg style="display:none" aria-hidden="true">
-  <symbol id="icon-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
-    <circle cx="12" cy="13" r="3.2"/>
-  </symbol>
-  <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/>
-    <path d="M9 12.5l2 2 4-4.5"/>
-  </symbol>
-  <symbol id="icon-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 13h4.5l1.5 2.5h6L16.5 13H21"/>
-    <path d="M5 13 6.5 5.5A1 1 0 0 1 7.5 5h9a1 1 0 0 1 1 .5L19 13"/>
-    <path d="M3 13v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5"/>
-  </symbol>
-  <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4l2 2h9A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5Z"/>
-  </symbol>
-  <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="8.5"/>
-    <path d="M3.5 12h17M12 3.5c2.6 2.3 4 5.3 4 8.5s-1.4 6.2-4 8.5c-2.6-2.3-4-5.3-4-8.5s1.4-6.2 4-8.5Z"/>
-  </symbol>
-  <symbol id="icon-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3.5" y="4" width="17" height="4.2" rx="1"/>
-    <path d="M4.5 8.5v9.5a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V8.5"/>
-    <path d="M10 12.3h4"/>
-  </symbol>
-  <symbol id="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 5.5h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H10l-4 3v-3H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/>
-  </symbol>
-  <symbol id="icon-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="6.5" y="6.5" width="13" height="13" rx="1.5"/>
-    <path d="M4.5 15.5v-10a1 1 0 0 1 1-1h10"/>
-  </symbol>
-  <symbol id="icon-gallery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/>
-    <path d="M3.5 15.5 8 11l3.5 3.5L15 11l5.5 5.5"/>
-    <circle cx="8.3" cy="8.3" r="1.3"/>
-  </symbol>
-  <symbol id="icon-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17.2 9.02 4 4 0 0 1 17 18H7Z"/>
-  </symbol>
-</svg>
 
 <div class="wrap">
+  <p class="eyebrow">JAGM · Marketing &amp; Communications</p>
+  <h1>📸 Visual Asset Playbook</h1>
+  <p class="meta">Version 1.2 · Last updated Sept 18, 2026 · Next review March 2027</p>
+  <p class="dek">JAGM generates photos and video at nearly every event, classroom visit, and program session. This playbook gives every contributor — staff, volunteers, program leads, and contracted photographers — one path from camera to official archive.</p>
 
-  <header class="hero">
-    <div class="brandmark"><span class="sq">JA</span> JAGM · Junior Achievement of Greater Miami</div>
-    <p class="eyebrow">Marketing &amp; Communications · Internal Playbook</p>
-    <h1>Visual Asset Playbook</h1>
-    <p class="org-line">Junior Achievement of Greater Miami — capturing, organizing, and archiving event &amp; program visuals</p>
-    <div class="meta-row">
-      <span class="pill accent">Version 1.2</span>
-      <span class="pill teal">Status: Active — team rollout</span>
-      <span class="pill">Owner: Marketing Department</span>
-      <span class="pill">Last updated: Sept 16, 2026</span>
-    </div>
-  </header>
-
-  <nav class="toc" aria-label="Table of contents">
-    <a href="#purpose"><span class="n">01</span>Purpose</a>
-    <a href="#overview"><span class="n">02</span>Workflow overview</a>
-    <a href="#stages"><span class="n">03</span>Step-by-step</a>
-    <a href="#roles"><span class="n">04</span>Roles</a>
-    <a href="#naming"><span class="n">05</span>Naming</a>
-    <a href="#retention"><span class="n">06</span>Retention</a>
-    <a href="#checklists"><span class="n">07</span>Checklists</a>
+  <nav class="toc" aria-label="Section navigation">
+    <a href="#workflow">Workflow</a>
+    <a href="#purpose">Purpose</a>
+    <a href="#steps">Step-by-step</a>
+    <a href="#roles">Roles</a>
+    <a href="#naming">Naming convention</a>
+    <a href="#retention">Retention</a>
+    <a href="#checklists">Checklists</a>
   </nav>
 
-  <div class="quick-links">
-    <a class="link-card" href="#" title="Replace with the JAGM_Visual_Share invite link">
-      <svg class="icon"><use href="#icon-chat"/></svg>
-      <span class="label">WhatsApp Group</span>
-      <span class="href">[ add invite link ]</span>
-    </a>
-    <a class="link-card" href="#" title="Replace with the shared JAGM Google Photos account link">
-      <svg class="icon"><use href="#icon-stack"/></svg>
-      <span class="label">Google Photos</span>
-      <span class="href">[ add account link ]</span>
-    </a>
-    <a class="link-card" href="#" title="Replace with the JAGM Flickr account link">
-      <svg class="icon"><use href="#icon-gallery"/></svg>
-      <span class="label">Flickr</span>
-      <span class="href">[ add account link ]</span>
-    </a>
-    <a class="link-card" href="#" title="Replace with the Marketing → Visual Archive SharePoint folder link">
-      <svg class="icon"><use href="#icon-cloud"/></svg>
-      <span class="label">SharePoint Archive</span>
-      <span class="href">[ add folder link ]</span>
-    </a>
-  </div>
+  <section id="workflow">
+    <div class="section-head"><span class="section-num">00</span><h2>🗺️ The workflow, at a glance</h2></div>
+    <p class="section-intro">One decision — whether a subject's consent is cleared — sends every asset down one of two paths. Keep this picture in mind; every section below is the detail behind it.</p>
 
-  <section id="purpose">
-    <h2>01 · Purpose</h2>
-    <p class="lede">JAGM generates photos and video at nearly every event, classroom visit, and program session. Without a shared process, that content ends up scattered across phones, group chats, and personal drives — hard to find and unsafe to reuse. This playbook gives every contributor one path from <em>camera</em> to <em>official archive</em>.</p>
-    <p class="lede">It applies to all staff, volunteers, program leads, and contracted photographers who capture JAGM visuals for marketing, communications, or donor-facing use.</p>
-  </section>
+    <figure>
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 1400 600" role="img" aria-label="Swimlane diagram: Marketing Manager captures an asset, the Program or Event Lead runs a consent check, the Digital Marketing Manager takes central intake and then organizes it, then the flow forks — consent cleared goes to the Marketing Manager for external share on Flickr and on to the Operations Manager for official SharePoint archive; unclear or declined consent stays internal only in Google Photos.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path class="arrowhead" d="M0,0 L10,5 L0,10 z" />
+            </marker>
+          </defs>
+          <line class="lane-sep" x1="270" y1="56" x2="270" y2="574"/>
+          <line class="lane-sep" x1="590" y1="56" x2="590" y2="574"/>
+          <line class="lane-sep" x1="860" y1="56" x2="860" y2="574"/>
+          <line class="lane-sep" x1="1130" y1="56" x2="1130" y2="574"/>
+          <line class="lane-sep" x1="0" y1="56" x2="1400" y2="56"/>
+          <text class="lane-label" x="135" y="40" text-anchor="middle">Marketing Manager</text>
+          <text class="lane-label" x="430" y="40" text-anchor="middle">Program / Event Lead</text>
+          <text class="lane-label" x="725" y="28" text-anchor="middle">Digital Marketing</text>
+          <text class="lane-label" x="725" y="49" text-anchor="middle">Manager</text>
+          <text class="lane-label" x="995" y="40" text-anchor="middle">Marketing Manager</text>
+          <text class="lane-label" x="1265" y="40" text-anchor="middle">Operations Manager</text>
 
-  <section id="overview">
-    <h2>02 · Workflow at a glance</h2>
-    <div class="pipeline">
-      <div class="pipe-step"><svg class="icon"><use href="#icon-camera"/></svg><span class="num">1</span><div class="name">Capture</div><div class="desc">WhatsApp &amp; scheduled shoots</div></div>
-      <div class="pipe-step"><svg class="icon"><use href="#icon-shield"/></svg><span class="num">2</span><div class="name">Consent&nbsp;check</div><div class="desc">Before anything is published</div></div>
-      <div class="pipe-step"><svg class="icon"><use href="#icon-inbox"/></svg><span class="num">3</span><div class="name">Central intake</div><div class="desc">Google Photos, raw library</div></div>
-      <div class="pipe-step"><svg class="icon"><use href="#icon-folder"/></svg><span class="num">4</span><div class="name">Organize</div><div class="desc">Named Google Albums</div></div>
-      <div class="pipe-step"><svg class="icon"><use href="#icon-globe"/></svg><span class="num">5</span><div class="name">External share</div><div class="desc">Flickr highlight sets</div></div>
-      <div class="pipe-step"><svg class="icon"><use href="#icon-archive"/></svg><span class="num">6</span><div class="name">Official archive</div><div class="desc">SharePoint, Marketing dept.</div></div>
-    </div>
-  </section>
+          <rect class="node-box" x="20" y="176" width="230" height="108" rx="8"/>
+          <text class="node-title" x="135" y="212" text-anchor="middle">Capture</text>
+          <text class="node-sub" x="135" y="240" text-anchor="middle">Phone photos +</text>
+          <text class="node-sub" x="135" y="264" text-anchor="middle">DSLR shoots</text>
 
-  <section id="stages">
-    <h2>03 · Step-by-step</h2>
+          <line class="flow-line" x1="250" y1="230" x2="286" y2="230" marker-end="url(#arrow)"/>
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-camera"/></svg><span class="num">01</span><h3>Capture</h3></div>
-      <dl class="grid-2">
-        <dt>Owner</dt><dd><strong>Marketing Manager</strong></dd>
-        <dt>Who</dt><dd>Staff, volunteers, program leads; professional photographer on scheduled shoots</dd>
-        <dt>What</dt><dd>Take photos/video at the event, class visit, or program session</dd>
-        <dt>How</dt><dd>
-          <ul>
-            <li>Everyday phone photos → post directly to the <code class="tag">JAGM_Visual_Share</code> WhatsApp group</li>
-            <li>Professional/DSLR shoots → photographer delivers files to the Marketing Manager within <strong>5 business days</strong></li>
-          </ul>
-        </dd>
-        <dt>Tip</dt><dd>Get one wide/room shot, one action shot, and one posed group shot at every event — covers most marketing needs.</dd>
-      </dl>
-    </div>
+          <polygon class="node-decision" points="430,145 570,230 430,315 290,230"/>
+          <text class="node-title accent-text" x="430" y="214" text-anchor="middle">Consent</text>
+          <text class="node-title accent-text" x="430" y="248" text-anchor="middle">Check</text>
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-shield"/></svg><span class="num">02</span><h3>Consent check</h3></div>
-      <dl class="grid-2">
-        <dt>Who</dt><dd>Program or event lead on site</dd>
-        <dt>What</dt><dd>Confirm media-release status before any identifiable student appears in external-facing content</dd>
-        <dt>How</dt><dd>
-          <ul>
-            <li>Check the partner school's or event's media release list before the event (usually collected annually)</li>
-            <li>If a student's status is unknown or declined, do not feature them as an identifiable subject in Flickr, social, or website use</li>
-            <li>When unsure, favor wide or group shots over close-ups of unconfirmed individuals</li>
-          </ul>
-        </dd>
-      </dl>
-      <div class="warn-box">
-        <strong>Non-negotiable step</strong>
-        <p>This protects JAGM and our school partners. If consent can't be confirmed, the image stays in the internal Google Photos library only — it does not move to Flickr or SharePoint's public-facing folders.</p>
+          <line class="flow-line" x1="574" y1="230" x2="606" y2="230" marker-end="url(#arrow)"/>
+
+          <rect class="node-box" x="610" y="176" width="230" height="108" rx="8"/>
+          <text class="node-title" x="725" y="212" text-anchor="middle">Central Intake</text>
+          <text class="node-sub" x="725" y="240" text-anchor="middle">Google Photos</text>
+          <text class="node-sub" x="725" y="264" text-anchor="middle">(raw library)</text>
+
+          <line class="flow-line" x1="725" y1="284" x2="725" y2="304" marker-end="url(#arrow)"/>
+
+          <rect class="node-box" x="610" y="308" width="230" height="108" rx="8"/>
+          <text class="node-title" x="725" y="344" text-anchor="middle">Organize</text>
+          <text class="node-sub" x="725" y="372" text-anchor="middle">Named albums</text>
+          <text class="node-sub" x="725" y="396" text-anchor="middle">by event</text>
+
+          <path class="flow-line" d="M840,362 L858,362 L858,230 L876,230" marker-end="url(#arrow)"/>
+          <text class="branch-label" x="875" y="296" text-anchor="middle" transform="rotate(-90 875 296)">cleared</text>
+
+          <rect class="node-box" x="880" y="176" width="230" height="108" rx="8"/>
+          <text class="node-title" x="995" y="212" text-anchor="middle">External Share</text>
+          <text class="node-sub" x="995" y="240" text-anchor="middle">Flickr</text>
+          <text class="node-sub" x="995" y="264" text-anchor="middle">highlight sets</text>
+
+          <line class="flow-line" x1="1110" y1="230" x2="1146" y2="230" marker-end="url(#arrow)"/>
+
+          <rect class="node-box final" x="1150" y="176" width="230" height="108" rx="8"/>
+          <text class="node-title" x="1265" y="212" text-anchor="middle">Official Archive</text>
+          <text class="node-sub" x="1265" y="240" text-anchor="middle">SharePoint</text>
+          <text class="node-sub" x="1265" y="264" text-anchor="middle">within 30 days</text>
+
+          <line class="flow-line" x1="725" y1="416" x2="725" y2="458" marker-end="url(#arrow)"/>
+          <text class="branch-label" x="746" y="440">unclear / declined</text>
+
+          <rect class="node-dead" x="581" y="462" width="288" height="92" rx="8"/>
+          <text class="node-sub strong" x="725" y="500" text-anchor="middle">Internal only</text>
+          <text class="node-sub" x="725" y="524" text-anchor="middle">stays in Google Photos</text>
+        </svg>
+      </div>
+      <figcaption><b>One decision — consent status — sends every asset down one of two paths.</b> Cleared assets move on to Flickr and the permanent SharePoint archive; unclear or declined assets stop at the internal Google Photos library and are never published.</figcaption>
+    </figure>
+
+    <div class="tools-section">
+      <p class="eyebrow">Tools in this workflow</p>
+      <div class="tools-boxes">
+        <div class="tool-box"><span class="tool-title">💬 WhatsApp</span></div>
+        <div class="tool-box"><span class="tool-title">🖼️ Google Photos</span><span class="tool-sub">(Albums)</span></div>
+        <div class="tool-box"><span class="tool-title">📷 Flickr</span></div>
+        <div class="tool-box"><span class="tool-title">📁 Microsoft SharePoint</span></div>
       </div>
     </div>
+  </section>
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-inbox"/></svg><span class="num">03</span><h3>Central intake — Google Photos</h3></div>
-      <dl class="grid-2">
-        <dt>Owner</dt><dd><strong>Digital Marketing Manager</strong></dd>
-        <dt>What</dt><dd>Every raw asset lands in one shared library before anything goes further</dd>
-        <dt>How</dt><dd>Upload raw files from WhatsApp and camera shoots to the shared JAGM Google Photos account within 5 business days of the event</dd>
-        <dt>Output</dt><dd>Unedited raw library — the single source of truth for what was captured</dd>
-      </dl>
-    </div>
+  <section id="purpose">
+    <div class="section-head"><span class="section-num">01</span><h2>🎯 Purpose</h2></div>
+    <p>JAGM generates photos and video at nearly every event, classroom visit, and program session. Without a shared process, that content ends up scattered across phones, group chats, and personal drives. This playbook gives every contributor one path from camera to official archive. It applies to all staff, volunteers, program leads, and contracted photographers who capture JAGM visuals for marketing, communications, or donor-facing use.</p>
+  </section>
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-folder"/></svg><span class="num">04</span><h3>Organize — Google Albums</h3></div>
-      <dl class="grid-2">
-        <dt>Owner</dt><dd><strong>Digital Marketing Manager</strong></dd>
-        <dt>What</dt><dd>Sort raw uploads into one named album per event or program</dd>
-        <dt>How</dt><dd>Create an album using the standard naming convention (see Section 05) and share access with relevant team members and program leads</dd>
-        <dt>Output</dt><dd>Organized, shareable albums by event</dd>
-      </dl>
-    </div>
+  <section id="steps">
+    <div class="section-head"><span class="section-num">02</span><h2>📋 Step-by-step</h2></div>
+    <div class="steps">
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-globe"/></svg><span class="num">05</span><h3>External share — Flickr</h3></div>
-      <dl class="grid-2">
-        <dt>Owner</dt><dd><strong>Marketing Manager</strong></dd>
-        <dt>What</dt><dd>Curated, consent-cleared highlight sets for public use</dd>
-        <dt>How</dt><dd>Select the best consent-cleared images from each album; upload to the JAGM Flickr account under the same naming convention</dd>
-        <dt>Used for</dt><dd>Website, newsletters, donor reports, social media, partner requests</dd>
-      </dl>
-    </div>
+      <div class="step-card">
+        <div class="step-top"><span class="step-num">STEP 1 OF 6</span><span class="owner-pill">📣 Marketing Manager</span></div>
+        <h3 class="step-title">📸 Capture</h3>
+        <dl class="step-fields">
+          <dt>Who</dt><dd>Staff, volunteers, program leads; professional photographer on scheduled shoots</dd>
+          <dt>What</dt><dd>Take photos/video at the event, class visit, or program session</dd>
+          <dt>How</dt><dd>Everyday phone photos go to the JAGM_Visual_Share WhatsApp group same day; professional/DSLR shoots are delivered by the photographer to the Marketing Manager within 5 business days</dd>
+          <dt>Tip</dt><dd>Get one wide/room shot, one action shot, and one posed group shot at every event</dd>
+        </dl>
+      </div>
 
-    <div class="stage">
-      <div class="stage-head"><svg class="icon"><use href="#icon-archive"/></svg><span class="num">06</span><h3>Official archive — SharePoint</h3></div>
-      <dl class="grid-2">
-        <dt>Owner</dt><dd><strong>Operations Manager</strong></dd>
-        <dt>What</dt><dd>Permanent, official system of record</dd>
-        <dt>How</dt><dd>Within 30 days of the event, copy the final curated set plus any hero images to <code class="tag">Marketing → Visual Archive</code> on SharePoint, in a matching named subfolder</dd>
-        <dt>Output</dt><dd>The version that survives platform changes, account changes, and staff turnover</dd>
-        <dt>Why</dt><dd>Kept with Operations rather than Marketing because this copy is the official system of record, not a working or promotional library</dd>
-      </dl>
+      <div class="step-card decision">
+        <div class="step-top"><span class="step-num">STEP 2 OF 6 · DECISION POINT</span><span class="owner-pill">🛡️ Program / Event Lead</span></div>
+        <h3 class="step-title">✅ Consent check <span style="font-weight:400; font-size:16px; color:var(--accent-ink);">(non-negotiable)</span></h3>
+        <dl class="step-fields">
+          <dt>Who</dt><dd>Program or event lead on site</dd>
+          <dt>What</dt><dd>Confirm media-release status before any identifiable student appears in external-facing content</dd>
+          <dt>How</dt><dd>Check the partner school's/event's media release list before the event; if a student's status is unknown or declined, do not feature them as an identifiable subject in Flickr, social, or website use; favor wide/group shots over close-ups of unconfirmed individuals when unsure</dd>
+        </dl>
+        <div class="fork-callout"><b>This is the fork in the diagram above.</b> Every asset passes through this one decision. Cleared → continues to Flickr and the official SharePoint archive. Unclear or declined → stops here, permanently, in the internal Google Photos library only — it never reaches Flickr or SharePoint's public-facing folders.</div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-top"><span class="step-num">STEP 3 OF 6</span><span class="owner-pill">🗂️ Digital Marketing Manager</span></div>
+        <h3 class="step-title">📥 Central intake</h3>
+        <dl class="step-fields">
+          <dt>What</dt><dd>Every raw asset lands in one shared library before anything goes further</dd>
+          <dt>How</dt><dd>Upload raw files from WhatsApp and camera shoots to the shared JAGM Google Photos account within 5 business days</dd>
+          <dt>Output</dt><dd>Unedited raw library — single source of truth</dd>
+        </dl>
+      </div>
+
+      <div class="step-card">
+        <div class="step-top"><span class="step-num">STEP 4 OF 6</span><span class="owner-pill">🗂️ Digital Marketing Manager</span></div>
+        <h3 class="step-title">🗃️ Organize</h3>
+        <dl class="step-fields">
+          <dt>What</dt><dd>Sort raw uploads into one named album per event/program</dd>
+          <dt>How</dt><dd>Create an album using the naming convention below; share access with relevant team members and program leads</dd>
+          <dt>Output</dt><dd>Organized, shareable albums by event</dd>
+        </dl>
+      </div>
+
+      <div class="step-card">
+        <div class="step-top"><span class="step-num">STEP 5 OF 6</span><span class="owner-pill">📣 Marketing Manager</span></div>
+        <h3 class="step-title">📤 External share</h3>
+        <dl class="step-fields">
+          <dt>What</dt><dd>Curated, consent-cleared highlight sets for public use</dd>
+          <dt>How</dt><dd>Select best consent-cleared images from each album; upload to JAGM Flickr under the same naming convention</dd>
+          <dt>Used for</dt><dd>Website, newsletters, donor reports, social media, partner requests</dd>
+        </dl>
+      </div>
+
+      <div class="step-card">
+        <div class="step-top"><span class="step-num">STEP 6 OF 6</span><span class="owner-pill">🏛️ Operations Manager</span></div>
+        <h3 class="step-title">🗄️ Official archive</h3>
+        <dl class="step-fields">
+          <dt>What</dt><dd>Permanent, official system of record</dd>
+          <dt>How</dt><dd>Within 30 days of the event, copy the final curated set plus hero images to Marketing → Visual Archive on SharePoint, in a matching named subfolder</dd>
+          <dt>Output</dt><dd>The version that survives platform changes, account changes, and staff turnover</dd>
+          <dt>Why Ops</dt><dd>This copy is the official system of record, not a working or promotional library</dd>
+        </dl>
+      </div>
+
     </div>
   </section>
 
   <section id="roles">
-    <h2>04 · Roles &amp; responsibilities</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Role</th><th>Responsible for</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Field contributors</strong><br>staff, volunteers, program leads</td><td>Capture and submit visuals promptly; flag consent concerns at the point of capture</td></tr>
-          <tr><td><strong>Program / event lead</strong></td><td>Confirm consent status on-site before content is submitted for external use</td></tr>
-          <tr><td><strong>Marketing Manager</strong></td><td>Own Capture coordination, incl. professional/DSLR delivery; own Flickr external share</td></tr>
-          <tr><td><strong>Digital Marketing Manager</strong></td><td>Own Google Photos central intake, album creation, and naming consistency</td></tr>
-          <tr><td><strong>Operations Manager</strong></td><td>Own the official SharePoint archive — the permanent system of record</td></tr>
-        </tbody>
-      </table>
+    <div class="section-head"><span class="section-num">03</span><h2>👥 Roles &amp; responsibilities</h2></div>
+    <div class="roles-grid">
+      <div class="role-card">
+        <h4>🙋 Field contributors</h4>
+        <ul><li>Capture and submit visuals promptly</li><li>Flag consent concerns at the point of capture</li></ul>
+      </div>
+      <div class="role-card">
+        <h4>🛡️ Program / event lead</h4>
+        <ul><li>Confirm consent status on-site before submission</li></ul>
+      </div>
+      <div class="role-card">
+        <h4>📣 Marketing Manager</h4>
+        <ul><li>Owns Capture coordination, incl. professional/DSLR delivery</li><li>Owns Flickr external share</li></ul>
+      </div>
+      <div class="role-card">
+        <h4>🗂️ Digital Marketing Manager</h4>
+        <ul><li>Owns Google Photos central intake</li><li>Owns album organization</li></ul>
+      </div>
+      <div class="role-card">
+        <h4>🏛️ Operations Manager</h4>
+        <ul><li>Owns the official SharePoint archive</li></ul>
+      </div>
     </div>
   </section>
 
   <section id="naming">
-    <h2>05 · Naming convention</h2>
-    <p>Every album, Flickr set, and SharePoint subfolder for the same event uses one name, so it's findable everywhere:</p>
-    <div class="naming-example">JAGM_[Event_Name]_[Mon][DD]_[YY]
-
-e.g.  JAGM_Job_Shadow_Day_Mar12_26
-      JAGM_BizTown_Spring_Apr02_26</div>
-    <p style="font-size:.9rem;color:var(--ink-soft);">Use underscores, not spaces or hyphens, between words in the event name. Date is a 3-letter month directly followed by a 2-digit day (e.g. <code class="tag">Mar12</code>), then an underscore and 2-digit year.</p>
+    <div class="section-head"><span class="section-num">04</span><h2>🏷️ Naming convention</h2></div>
+    <div class="anatomy">
+      <div class="anatomy-string">
+        <span class="anatomy-seg">JAGM</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">Job_Shadow_Day</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">Mar12</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">26</span>
+      </div>
+      <div class="anatomy-legend">
+        <div><b>ORG TAG</b><br>Always <code style="font-family:'IBM Plex Mono',monospace;">JAGM</code></div>
+        <div><b>EVENT NAME</b><br>Underscores between words — never spaces or hyphens</div>
+        <div><b>DATE — MONTH + DAY</b><br>3-letter month directly followed by 2-digit day (e.g. <code style="font-family:'IBM Plex Mono',monospace;">Mar12</code>)</div>
+        <div><b>DATE — YEAR</b><br>2-digit year, separated by an underscore</div>
+      </div>
+      <div class="example-box">
+        <div>JAGM_Job_Shadow_Day_Mar12_26</div>
+        <div>JAGM_BizTown_Spring_Apr02_26</div>
+      </div>
+    </div>
   </section>
 
   <section id="retention">
-    <h2>06 · Retention &amp; housekeeping</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Platform</th><th>Role</th><th>Retention</th></tr></thead>
-        <tbody>
-          <tr><td>Google Photos</td><td>Working / raw library</td><td>Kept indefinitely as raw backup — not the official archive</td></tr>
-          <tr><td>Flickr</td><td>Public highlight galleries</td><td>Current + prior 2 program years visible; older sets archived, not deleted</td></tr>
-          <tr><td>SharePoint</td><td>Official archive</td><td>Permanent — nothing deleted without Marketing Director sign-off</td></tr>
-        </tbody>
-      </table>
+    <div class="section-head"><span class="section-num">05</span><h2>🗄️ Retention &amp; housekeeping</h2></div>
+    <div class="retention-grid">
+      <div class="retention-tile">
+        <div class="rt-tool">Google Photos</div>
+        <div class="rt-value">Indefinite</div>
+        <div class="rt-desc">Working/raw library, kept as backup — not the official archive</div>
+      </div>
+      <div class="retention-tile">
+        <div class="rt-tool">Flickr</div>
+        <div class="rt-value">Current + 2 years</div>
+        <div class="rt-desc">Public galleries; older sets archived, not deleted</div>
+      </div>
+      <div class="retention-tile">
+        <div class="rt-tool">SharePoint</div>
+        <div class="rt-value">Permanent</div>
+        <div class="rt-desc">Official archive — nothing deleted without Marketing Director sign-off</div>
+      </div>
     </div>
-    <p style="margin-top:14px;">Marketing reviews albums quarterly for consent flags, naming consistency, and any events missing from the SharePoint archive.</p>
+    <p class="housekeeping">Marketing reviews albums quarterly for consent flags, naming consistency, and SharePoint sync gaps.</p>
   </section>
 
   <section id="checklists">
-    <h2>07 · Quick checklists</h2>
-    <div class="checklists">
-      <div class="check-card">
-        <h3>🧑‍💼 Field contributors</h3>
-        <div class="check-item"><span class="box"></span>Phone photos shared to WhatsApp the same day</div>
-        <div class="check-item"><span class="box"></span>Professional/DSLR files delivered to the Marketing Manager within 5 business days</div>
-        <div class="check-item"><span class="box"></span>Consent status checked for any identifiable students</div>
-        <div class="check-item"><span class="box"></span>Event name and date included when submitting</div>
+    <div class="section-head"><span class="section-num">06</span><h2>✅ Quick checklists</h2></div>
+    <div class="checklist-grid">
+      <div class="checklist-card">
+        <h4>🙋 Field contributors</h4>
+        <ul>
+          <li>Phone photos shared to WhatsApp the same day</li>
+          <li>Professional/DSLR files delivered to the Marketing Manager within 5 business days</li>
+          <li>Consent status checked for any identifiable students</li>
+          <li>Event name and date included when submitting</li>
+        </ul>
       </div>
-      <div class="check-card">
-        <h3>📣 Marketing Manager</h3>
-        <div class="check-item"><span class="box"></span>Professional/DSLR files received within 5 business days</div>
-        <div class="check-item"><span class="box"></span>Consent-cleared highlights selected and posted to Flickr</div>
+      <div class="checklist-card">
+        <h4>📣 Marketing Manager</h4>
+        <ul>
+          <li>Professional/DSLR files received within 5 business days</li>
+          <li>Consent-cleared highlights selected and posted to Flickr</li>
+        </ul>
       </div>
-      <div class="check-card">
-        <h3>💻 Digital Marketing Manager</h3>
-        <div class="check-item"><span class="box"></span>Uploaded to Google Photos within 5 business days</div>
-        <div class="check-item"><span class="box"></span>Album created and named correctly</div>
+      <div class="checklist-card">
+        <h4>🗂️ Digital Marketing Manager</h4>
+        <ul>
+          <li>Uploaded to Google Photos within 5 business days</li>
+          <li>Album created and named correctly</li>
+        </ul>
       </div>
-      <div class="check-card">
-        <h3>🗄️ Operations Manager</h3>
-        <div class="check-item"><span class="box"></span>Final set archived to SharePoint within 30 days</div>
+      <div class="checklist-card">
+        <h4>🏛️ Operations Manager</h4>
+        <ul>
+          <li>Final set archived to SharePoint within 30 days</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <footer>
-    <span>Version 1.2</span>
-    <span>Owner: Marketing Department, JA Greater Miami</span>
-    <span>Last updated: Sept 16, 2026</span>
-    <span>Next review: March 2027</span>
+  <footer class="changelog">
+    <b style="color:var(--ink-soft);">What's updated in V1.2 —</b> Converted to a single designed page: workflow diagram embedded live, steps rendered as owner-tagged cards with the consent check marked as the decision point, naming convention shown as a labeled anatomy diagram, retention shown per tool, checklists restyled. Owners assigned by role. Professional/DSLR delivery window corrected from 48 hours to 5 business days.
   </footer>
-
 </div>
-
-</body>
-</html>
