@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>JAGM Visual Asset Playbook</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -49,9 +50,10 @@
   }
   nav.toc a {
     font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 14.5px;
-    color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 6px;
+    color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 20px;
+    border: 1px solid var(--line); background: var(--paper);
   }
-  nav.toc a:hover { background: var(--paper); color: var(--ink); }
+  nav.toc a:hover { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); }
 
   section { margin: 0 0 64px; scroll-margin-top: 20px; }
   section:last-of-type { margin-bottom: 24px; }
@@ -89,15 +91,9 @@
   .node-sub.strong { font-weight: 600; }
   .lane-label { fill: var(--ink-soft); font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.07em; text-transform: uppercase; }
   .branch-label { fill: var(--ink-soft); font-family: 'IBM Plex Sans', sans-serif; font-style: italic; font-size: 19px; }
-
-  .tools-section { margin-top: 40px; }
-  .tools-boxes { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; }
-  .tool-box {
-    flex: 1 1 220px; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--paper);
-    padding: 18px 22px; text-align: center; display: flex; flex-direction: column; gap: 4px; justify-content: center;
-  }
-  .tool-title { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 22px; color: var(--ink); }
-  .tool-sub { font-size: 17px; color: var(--ink-soft); }
+  .tool-chip { fill: var(--paper-alt); stroke: var(--ink-faint); stroke-width: 1.5; }
+  .tool-chip-text { fill: var(--ink); font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 18px; }
+  .tool-chip-sub { fill: var(--ink-soft); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; }
 
   /* ---- step cards ---- */
   .steps { display: flex; flex-direction: column; gap: 18px; }
@@ -175,6 +171,21 @@
     border: 1.5px solid var(--ink-soft); border-radius: 3px;
   }
 
+  /* ---- notes / not yet in effect ---- */
+  .notes-panel {
+    border: 1.5px dashed var(--ink-faint); border-radius: 10px; padding: 24px 26px; background: var(--paper-alt);
+  }
+  .notes-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--ink-soft); border: 1px solid var(--ink-faint); border-radius: 20px;
+    padding: 3px 12px; margin-bottom: 16px;
+  }
+  .notes-panel ul { margin: 0; padding-left: 20px; }
+  .notes-panel li { font-size: 15px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 12px; }
+  .notes-panel li:last-child { margin-bottom: 0; }
+  .notes-panel b { color: var(--ink); }
+  .notes-panel code { font-family: 'IBM Plex Mono', monospace; background: var(--paper); padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+
   footer.changelog {
     border-top: 1px solid var(--line); padding-top: 20px; font-size: 13.5px; color: var(--ink-faint); line-height: 1.6;
   }
@@ -188,7 +199,7 @@
 <div class="wrap">
   <p class="eyebrow">JAGM · Marketing &amp; Communications</p>
   <h1>JAGM Visual Asset Playbook</h1>
-  <p class="meta">Version.0918_26 · Last updated Sept 18, 2026 · Next review March 2027</p>
+  <p class="meta">Version 1.4 · Last updated Sept 18, 2026 · Next review March 2027</p>
   <p class="dek">JAGM generates photos and video at nearly every event, classroom visit, and program session. This playbook gives every contributor — staff, volunteers, program leads, and contracted photographers — one path from camera to official archive.</p>
 
   <nav class="toc" aria-label="Section navigation">
@@ -199,106 +210,112 @@
     <a href="#naming">Naming convention</a>
     <a href="#retention">Retention</a>
     <a href="#checklists">Checklists</a>
+    <a href="#updates">Upcoming updates</a>
   </nav>
 
   <section id="workflow">
-    <div class="section-head"><span class="section-num">00</span><h2>🗺️ The workflow, at a glance</h2></div>
+    <div class="section-head"><span class="section-num">00</span><h2>The workflow, at a glance</h2></div>
     <p class="section-intro">One decision — whether a subject's consent is cleared — sends every asset down one of two paths. Keep this picture in mind; every section below is the detail behind it.</p>
 
     <figure>
       <div class="diagram-scroll">
-        <svg class="diagram" viewBox="0 0 1400 600" role="img" aria-label="Swimlane diagram: Marketing Manager captures an asset, the Program or Event Lead runs a consent check, the Digital Marketing Manager takes central intake and then organizes it, then the flow forks — consent cleared goes to the Marketing Manager for external share on Flickr and on to the Operations Manager for official SharePoint archive; unclear or declined consent stays internal only in Google Photos.">
+        <svg class="diagram" viewBox="0 0 1400 610" role="img" aria-label="Swimlane diagram: Marketing Manager captures an asset, the Program or Event Lead runs a consent check, the Digital Marketing Manager takes central intake and then organizes it, then the flow forks — consent cleared goes to the Marketing Manager for external share on Flickr and on to the Operations Manager for official SharePoint archive; unclear or declined consent stays internal only in Google Photos. Below the diagram, each column repeats its owning role and, where one applies, the tool that role works in.">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
               <path class="arrowhead" d="M0,0 L10,5 L0,10 z" />
             </marker>
           </defs>
-          <line class="lane-sep" x1="270" y1="56" x2="270" y2="574"/>
-          <line class="lane-sep" x1="590" y1="56" x2="590" y2="574"/>
-          <line class="lane-sep" x1="860" y1="56" x2="860" y2="574"/>
-          <line class="lane-sep" x1="1130" y1="56" x2="1130" y2="574"/>
-          <line class="lane-sep" x1="0" y1="56" x2="1400" y2="56"/>
-          <text class="lane-label" x="135" y="40" text-anchor="middle">Marketing Manager</text>
-          <text class="lane-label" x="430" y="40" text-anchor="middle">Program / Event Lead</text>
-          <text class="lane-label" x="725" y="28" text-anchor="middle">Digital Marketing</text>
-          <text class="lane-label" x="725" y="49" text-anchor="middle">Manager</text>
-          <text class="lane-label" x="995" y="40" text-anchor="middle">Marketing Manager</text>
-          <text class="lane-label" x="1265" y="40" text-anchor="middle">Operations Manager</text>
+          <line class="lane-sep" x1="270" y1="20" x2="270" y2="602"/>
+          <line class="lane-sep" x1="590" y1="20" x2="590" y2="602"/>
+          <line class="lane-sep" x1="860" y1="20" x2="860" y2="602"/>
+          <line class="lane-sep" x1="1130" y1="20" x2="1130" y2="602"/>
 
-          <rect class="node-box" x="20" y="176" width="230" height="108" rx="8"/>
-          <text class="node-title" x="135" y="212" text-anchor="middle">Capture</text>
-          <text class="node-sub" x="135" y="240" text-anchor="middle">Phone photos +</text>
-          <text class="node-sub" x="135" y="264" text-anchor="middle">DSLR shoots</text>
+          <rect class="node-box" x="20" y="76" width="230" height="108" rx="8"/>
+          <text class="node-title" x="135" y="112" text-anchor="middle">Capture</text>
+          <text class="node-sub" x="135" y="140" text-anchor="middle">Phone photos +</text>
+          <text class="node-sub" x="135" y="164" text-anchor="middle">DSLR shoots</text>
 
-          <line class="flow-line" x1="250" y1="230" x2="286" y2="230" marker-end="url(#arrow)"/>
+          <line class="flow-line" x1="250" y1="130" x2="286" y2="130" marker-end="url(#arrow)"/>
 
-          <polygon class="node-decision" points="430,145 570,230 430,315 290,230"/>
-          <text class="node-title accent-text" x="430" y="214" text-anchor="middle">Consent</text>
-          <text class="node-title accent-text" x="430" y="248" text-anchor="middle">Check</text>
+          <polygon class="node-decision" points="430,45 570,130 430,215 290,130"/>
+          <text class="node-title accent-text" x="430" y="114" text-anchor="middle">Consent</text>
+          <text class="node-title accent-text" x="430" y="148" text-anchor="middle">Check</text>
 
-          <line class="flow-line" x1="574" y1="230" x2="606" y2="230" marker-end="url(#arrow)"/>
+          <line class="flow-line" x1="574" y1="130" x2="606" y2="130" marker-end="url(#arrow)"/>
 
-          <rect class="node-box" x="610" y="176" width="230" height="108" rx="8"/>
-          <text class="node-title" x="725" y="212" text-anchor="middle">Central Intake</text>
-          <text class="node-sub" x="725" y="240" text-anchor="middle">Google Photos</text>
-          <text class="node-sub" x="725" y="264" text-anchor="middle">(raw library)</text>
+          <rect class="node-box" x="610" y="76" width="230" height="108" rx="8"/>
+          <text class="node-title" x="725" y="112" text-anchor="middle">Central Intake</text>
+          <text class="node-sub" x="725" y="140" text-anchor="middle">Google Photos</text>
+          <text class="node-sub" x="725" y="164" text-anchor="middle">(raw library)</text>
 
-          <line class="flow-line" x1="725" y1="284" x2="725" y2="304" marker-end="url(#arrow)"/>
+          <line class="flow-line" x1="725" y1="184" x2="725" y2="204" marker-end="url(#arrow)"/>
 
-          <rect class="node-box" x="610" y="308" width="230" height="108" rx="8"/>
-          <text class="node-title" x="725" y="344" text-anchor="middle">Organize</text>
-          <text class="node-sub" x="725" y="372" text-anchor="middle">Named albums</text>
-          <text class="node-sub" x="725" y="396" text-anchor="middle">by event</text>
+          <rect class="node-box" x="610" y="208" width="230" height="108" rx="8"/>
+          <text class="node-title" x="725" y="244" text-anchor="middle">Organize</text>
+          <text class="node-sub" x="725" y="272" text-anchor="middle">Named albums</text>
+          <text class="node-sub" x="725" y="296" text-anchor="middle">by event</text>
 
-          <path class="flow-line" d="M840,362 L858,362 L858,230 L876,230" marker-end="url(#arrow)"/>
-          <text class="branch-label" x="875" y="296" text-anchor="middle" transform="rotate(-90 875 296)">cleared</text>
+          <path class="flow-line" d="M840,262 L850,262 L850,130 L876,130" marker-end="url(#arrow)"/>
+          <text class="branch-label" x="868" y="196" text-anchor="middle" transform="rotate(-90 868 196)">cleared</text>
 
-          <rect class="node-box" x="880" y="176" width="230" height="108" rx="8"/>
-          <text class="node-title" x="995" y="212" text-anchor="middle">External Share</text>
-          <text class="node-sub" x="995" y="240" text-anchor="middle">Flickr</text>
-          <text class="node-sub" x="995" y="264" text-anchor="middle">highlight sets</text>
+          <rect class="node-box" x="880" y="76" width="230" height="108" rx="8"/>
+          <text class="node-title" x="995" y="112" text-anchor="middle">External Share</text>
+          <text class="node-sub" x="995" y="140" text-anchor="middle">Flickr</text>
+          <text class="node-sub" x="995" y="164" text-anchor="middle">highlight sets</text>
 
-          <line class="flow-line" x1="1110" y1="230" x2="1146" y2="230" marker-end="url(#arrow)"/>
+          <line class="flow-line" x1="1110" y1="130" x2="1146" y2="130" marker-end="url(#arrow)"/>
 
-          <rect class="node-box final" x="1150" y="176" width="230" height="108" rx="8"/>
-          <text class="node-title" x="1265" y="212" text-anchor="middle">Official Archive</text>
-          <text class="node-sub" x="1265" y="240" text-anchor="middle">SharePoint</text>
-          <text class="node-sub" x="1265" y="264" text-anchor="middle">within 30 days</text>
+          <rect class="node-box final" x="1150" y="76" width="230" height="108" rx="8"/>
+          <text class="node-title" x="1265" y="112" text-anchor="middle">Official Archive</text>
+          <text class="node-sub" x="1265" y="140" text-anchor="middle">SharePoint</text>
+          <text class="node-sub" x="1265" y="164" text-anchor="middle">within 30 days</text>
 
-          <line class="flow-line" x1="725" y1="416" x2="725" y2="458" marker-end="url(#arrow)"/>
-          <text class="branch-label" x="746" y="440">unclear / declined</text>
+          <line class="flow-line" x1="725" y1="316" x2="725" y2="358" marker-end="url(#arrow)"/>
+          <text class="branch-label" x="746" y="340">unclear / declined</text>
 
-          <rect class="node-dead" x="581" y="462" width="288" height="92" rx="8"/>
-          <text class="node-sub strong" x="725" y="500" text-anchor="middle">Internal only</text>
-          <text class="node-sub" x="725" y="524" text-anchor="middle">stays in Google Photos</text>
+          <rect class="node-dead" x="581" y="362" width="288" height="92" rx="8"/>
+          <text class="node-sub strong" x="725" y="400" text-anchor="middle">Internal only</text>
+          <text class="node-sub" x="725" y="424" text-anchor="middle">stays in Google Photos</text>
+
+          <line class="lane-sep" x1="0" y1="488" x2="1400" y2="488"/>
+
+          <text class="lane-label" x="135" y="518" text-anchor="middle">Marketing Manager</text>
+          <text class="lane-label" x="430" y="518" text-anchor="middle">Program / Event Lead</text>
+          <text class="lane-label" x="725" y="507" text-anchor="middle">Digital Marketing</text>
+          <text class="lane-label" x="725" y="528" text-anchor="middle">Manager</text>
+          <text class="lane-label" x="995" y="518" text-anchor="middle">Marketing Manager</text>
+          <text class="lane-label" x="1265" y="518" text-anchor="middle">Operations Manager</text>
+
+          <rect class="tool-chip" x="35" y="544" width="200" height="50" rx="8"/>
+          <text class="tool-chip-text" x="135" y="574" text-anchor="middle">WhatsApp</text>
+
+          <rect class="tool-chip" x="625" y="544" width="200" height="50" rx="8"/>
+          <text class="tool-chip-text" x="725" y="562" text-anchor="middle">Google Photos</text>
+          <text class="tool-chip-sub" x="725" y="582" text-anchor="middle">(Albums)</text>
+
+          <rect class="tool-chip" x="895" y="544" width="200" height="50" rx="8"/>
+          <text class="tool-chip-text" x="995" y="574" text-anchor="middle">Flickr</text>
+
+          <rect class="tool-chip" x="1165" y="544" width="200" height="50" rx="8"/>
+          <text class="tool-chip-text" x="1265" y="574" text-anchor="middle">SharePoint</text>
         </svg>
       </div>
-      <figcaption><b>One decision — consent status — sends every asset down one of two paths.</b> Cleared assets move on to Flickr and the permanent SharePoint archive; unclear or declined assets stop at the internal Google Photos library and are never published.</figcaption>
+      <figcaption><b>One decision — consent status — sends every asset down one of two paths.</b> Cleared assets move on to Flickr and the permanent SharePoint archive; unclear or declined assets stop at the internal Google Photos library and are never published. The role and tool for each lane are repeated directly below its column.</figcaption>
     </figure>
-
-    <div class="tools-section">
-      <p class="eyebrow">Tools in this workflow</p>
-      <div class="tools-boxes">
-        <div class="tool-box"><span class="tool-title">💬 WhatsApp</span></div>
-        <div class="tool-box"><span class="tool-title">🖼️ Google Photos</span><span class="tool-sub">(Albums)</span></div>
-        <div class="tool-box"><span class="tool-title">📷 Flickr</span></div>
-        <div class="tool-box"><span class="tool-title">📁 Microsoft SharePoint</span></div>
-      </div>
-    </div>
   </section>
 
   <section id="purpose">
-    <div class="section-head"><span class="section-num">01</span><h2>🎯 Purpose</h2></div>
-    <p>JAGM generates photos and video at nearly every event, classroom visit, and program session. Without a shared process, that content ends up scattered across phones, group chats, and personal drives. This playbook gives every contributor one path from camera to official archive. It applies to all staff, volunteers, program leads, and contracted photographers who capture JAGM visuals for marketing, communications, or donor-facing use.</p>
+    <div class="section-head"><span class="section-num">01</span><h2>Purpose</h2></div>
+    <p>Junior Achievement of Greater Miami (JAGM) generates photos and video at nearly every event, classroom visit, and program session. Without a shared process, that content ends up scattered across phones, group chats, and personal drives. This playbook gives every staff member and program lead one guideline — a single path from camera to official archive — by laying out the workflow, roles, actions, and deliverables involved at each step. It applies to all staff, volunteers, program leads, and contracted photographers who capture JAGM visuals for marketing, communications, or donor-facing use.</p>
   </section>
 
   <section id="steps">
-    <div class="section-head"><span class="section-num">02</span><h2>📋 Step-by-step</h2></div>
+    <div class="section-head"><span class="section-num">02</span><h2>Step-by-step</h2></div>
     <div class="steps">
 
       <div class="step-card">
-        <div class="step-top"><span class="step-num">STEP 1 OF 6</span><span class="owner-pill">📣 Marketing Manager</span></div>
-        <h3 class="step-title">📸 Capture</h3>
+        <div class="step-top"><span class="step-num">STEP 1 OF 6</span><span class="owner-pill">Marketing Manager</span></div>
+        <h3 class="step-title">Capture</h3>
         <dl class="step-fields">
           <dt>Who</dt><dd>Staff, volunteers, program leads; professional photographer on scheduled shoots</dd>
           <dt>What</dt><dd>Take photos/video at the event, class visit, or program session</dd>
@@ -308,8 +325,8 @@
       </div>
 
       <div class="step-card decision">
-        <div class="step-top"><span class="step-num">STEP 2 OF 6 · DECISION POINT</span><span class="owner-pill">🛡️ Program / Event Lead</span></div>
-        <h3 class="step-title">✅ Consent check <span style="font-weight:400; font-size:16px; color:var(--accent-ink);">(non-negotiable)</span></h3>
+        <div class="step-top"><span class="step-num">STEP 2 OF 6 · DECISION POINT</span><span class="owner-pill">Program / Event Lead</span></div>
+        <h3 class="step-title">Consent check <span style="font-weight:400; font-size:16px; color:var(--accent-ink);">(non-negotiable)</span></h3>
         <dl class="step-fields">
           <dt>Who</dt><dd>Program or event lead on site</dd>
           <dt>What</dt><dd>Confirm media-release status before any identifiable student appears in external-facing content</dd>
@@ -319,8 +336,8 @@
       </div>
 
       <div class="step-card">
-        <div class="step-top"><span class="step-num">STEP 3 OF 6</span><span class="owner-pill">🗂️ Digital Marketing Manager</span></div>
-        <h3 class="step-title">📥 Central intake</h3>
+        <div class="step-top"><span class="step-num">STEP 3 OF 6</span><span class="owner-pill">Digital Marketing Manager</span></div>
+        <h3 class="step-title">Central intake</h3>
         <dl class="step-fields">
           <dt>What</dt><dd>Every raw asset lands in one shared library before anything goes further</dd>
           <dt>How</dt><dd>Upload raw files from WhatsApp and camera shoots to the shared JAGM Google Photos account within 5 business days</dd>
@@ -329,8 +346,8 @@
       </div>
 
       <div class="step-card">
-        <div class="step-top"><span class="step-num">STEP 4 OF 6</span><span class="owner-pill">🗂️ Digital Marketing Manager</span></div>
-        <h3 class="step-title">🗃️ Organize</h3>
+        <div class="step-top"><span class="step-num">STEP 4 OF 6</span><span class="owner-pill">Digital Marketing Manager</span></div>
+        <h3 class="step-title">Organize</h3>
         <dl class="step-fields">
           <dt>What</dt><dd>Sort raw uploads into one named album per event/program</dd>
           <dt>How</dt><dd>Create an album using the naming convention below; share access with relevant team members and program leads</dd>
@@ -339,8 +356,8 @@
       </div>
 
       <div class="step-card">
-        <div class="step-top"><span class="step-num">STEP 5 OF 6</span><span class="owner-pill">📣 Marketing Manager</span></div>
-        <h3 class="step-title">📤 External share</h3>
+        <div class="step-top"><span class="step-num">STEP 5 OF 6</span><span class="owner-pill">Marketing Manager</span></div>
+        <h3 class="step-title">External share</h3>
         <dl class="step-fields">
           <dt>What</dt><dd>Curated, consent-cleared highlight sets for public use</dd>
           <dt>How</dt><dd>Select best consent-cleared images from each album; upload to JAGM Flickr under the same naming convention</dd>
@@ -349,8 +366,8 @@
       </div>
 
       <div class="step-card">
-        <div class="step-top"><span class="step-num">STEP 6 OF 6</span><span class="owner-pill">🏛️ Operations Manager</span></div>
-        <h3 class="step-title">🗄️ Official archive</h3>
+        <div class="step-top"><span class="step-num">STEP 6 OF 6</span><span class="owner-pill">Operations Manager</span></div>
+        <h3 class="step-title">Official archive</h3>
         <dl class="step-fields">
           <dt>What</dt><dd>Permanent, official system of record</dd>
           <dt>How</dt><dd>Within 30 days of the event, copy the final curated set plus hero images to Marketing → Visual Archive on SharePoint, in a matching named subfolder</dd>
@@ -363,33 +380,33 @@
   </section>
 
   <section id="roles">
-    <div class="section-head"><span class="section-num">03</span><h2>👥 Roles &amp; responsibilities</h2></div>
+    <div class="section-head"><span class="section-num">03</span><h2>Roles &amp; responsibilities</h2></div>
     <div class="roles-grid">
       <div class="role-card">
-        <h4>🙋 Field contributors</h4>
+        <h4>Field contributors</h4>
         <ul><li>Capture and submit visuals promptly</li><li>Flag consent concerns at the point of capture</li></ul>
       </div>
       <div class="role-card">
-        <h4>🛡️ Program / event lead</h4>
+        <h4>Program / event lead</h4>
         <ul><li>Confirm consent status on-site before submission</li></ul>
       </div>
       <div class="role-card">
-        <h4>📣 Marketing Manager</h4>
+        <h4>Marketing Manager</h4>
         <ul><li>Owns Capture coordination, incl. professional/DSLR delivery</li><li>Owns Flickr external share</li></ul>
       </div>
       <div class="role-card">
-        <h4>🗂️ Digital Marketing Manager</h4>
+        <h4>Digital Marketing Manager</h4>
         <ul><li>Owns Google Photos central intake</li><li>Owns album organization</li></ul>
       </div>
       <div class="role-card">
-        <h4>🏛️ Operations Manager</h4>
+        <h4>Operations Manager</h4>
         <ul><li>Owns the official SharePoint archive</li></ul>
       </div>
     </div>
   </section>
 
   <section id="naming">
-    <div class="section-head"><span class="section-num">04</span><h2>🏷️ Naming convention</h2></div>
+    <div class="section-head"><span class="section-num">04</span><h2>Naming convention</h2></div>
     <div class="anatomy">
       <div class="anatomy-string">
         <span class="anatomy-seg">JAGM</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">Job_Shadow_Day</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">Mar12</span><span class="anatomy-seg sep">_</span><span class="anatomy-seg">26</span>
@@ -408,7 +425,7 @@
   </section>
 
   <section id="retention">
-    <div class="section-head"><span class="section-num">05</span><h2>🗄️ Retention &amp; housekeeping</h2></div>
+    <div class="section-head"><span class="section-num">05</span><h2>Retention &amp; housekeeping</h2></div>
     <div class="retention-grid">
       <div class="retention-tile">
         <div class="rt-tool">Google Photos</div>
@@ -430,10 +447,10 @@
   </section>
 
   <section id="checklists">
-    <div class="section-head"><span class="section-num">06</span><h2>✅ Quick checklists</h2></div>
+    <div class="section-head"><span class="section-num">06</span><h2>Quick checklists</h2></div>
     <div class="checklist-grid">
       <div class="checklist-card">
-        <h4>🙋 Field contributors</h4>
+        <h4>Field contributors</h4>
         <ul>
           <li>Phone photos shared to WhatsApp the same day</li>
           <li>Professional/DSLR files delivered to the Marketing Manager within 5 business days</li>
@@ -442,21 +459,21 @@
         </ul>
       </div>
       <div class="checklist-card">
-        <h4>📣 Marketing Manager</h4>
+        <h4>Marketing Manager</h4>
         <ul>
           <li>Professional/DSLR files received within 5 business days</li>
           <li>Consent-cleared highlights selected and posted to Flickr</li>
         </ul>
       </div>
       <div class="checklist-card">
-        <h4>🗂️ Digital Marketing Manager</h4>
+        <h4>Digital Marketing Manager</h4>
         <ul>
           <li>Uploaded to Google Photos within 5 business days</li>
           <li>Album created and named correctly</li>
         </ul>
       </div>
       <div class="checklist-card">
-        <h4>🏛️ Operations Manager</h4>
+        <h4>Operations Manager</h4>
         <ul>
           <li>Final set archived to SharePoint within 30 days</li>
         </ul>
@@ -464,8 +481,27 @@
     </div>
   </section>
 
+  <section id="updates">
+    <div class="section-head"><span class="section-num">07</span><h2>Notes for upcoming updates</h2></div>
+    <div class="notes-panel">
+      <span class="notes-tag">Not yet in effect</span>
+      <ul>
+        <li><b>Brand alignment, not full compliance.</b> This page's visual identity uses a muted teal as a loose nod to miami.ja.org — not a locked style guide. Extend the same restrained palette if more visuals are added, rather than introducing new colors.</li>
+        <li><b>Reference point from the live site (Sept 2026 check):</b> primary color reads as a dark teal, approx. <code>#285F74</code> (pulled from the site's theme-color tag — treat as directional, not a verified brand hex). Site also uses the tagline "Reimagining Education to Expand Opportunity." No dedicated brand-guideline or press-kit page was found published on miami.ja.org.</li>
+        <li><b>Logo source caveat:</b> the only logo file found on the site is a compressed web PNG served through their CMS — not a clean vector suitable for reuse. If a logo needs to appear on curated assets, source the original file (or current brand guidelines) from JA USA national or JAGM's marketing team rather than pulling from the website.</li>
+        <li><b>Suggested next step:</b> ask JAGM marketing/leadership whether an informal or national (JA USA) brand guide already exists before drafting anything formal — may save rebuilding something that's already documented elsewhere.</li>
+      </ul>
+    </div>
+  </section>
+
   <footer class="changelog">
+    <b style="color:var(--ink-soft);">What's updated in V1.4 —</b> Workflow diagram reworked: the role-label row moved from a header above the diagram to a footer band directly under it, and the tools (WhatsApp, Google Photos, Flickr, SharePoint) now sit in that same footer, each aligned under the column it belongs to, instead of a separate unaligned row below.
+    <br><br>
+    <b style="color:var(--ink-soft);">What's updated in V1.3 —</b> Purpose section rewritten: grammar corrected, full org name spelled out on first use, and the statement now explicitly names what the playbook is for — the workflow, roles, actions, and deliverables at each step.
+    <br><br>
     <b style="color:var(--ink-soft);">What's updated in V1.2 —</b> Converted to a single designed page: workflow diagram embedded live, steps rendered as owner-tagged cards with the consent check marked as the decision point, naming convention shown as a labeled anatomy diagram, retention shown per tool, checklists restyled. Owners assigned by role. Professional/DSLR delivery window corrected from 48 hours to 5 business days.
     <div style="text-align:right; margin-top:14px;">By Ahmet Caner</div>
   </footer>
 </div>
+
+</body></html>
