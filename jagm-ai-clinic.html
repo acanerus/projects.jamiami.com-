@@ -1,0 +1,912 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>JAGM AI Clinic</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap">
+<style>
+/* Layout: a fixed 1920x1080 slide canvas scaled to fit the window, with a control bar and a notes drawer below.
+   Single deliberate look (the JAGM forest / paper / gold deck palette), so colors are set explicitly. */
+:root{
+  --forest:#16302B; --moss:#2F6B5A; --sage:#BFD8D5; --leaf:#DCE8E3;
+  --paper:#F7F6F1; --mist:#EEF2EE; --card:#FFFFFC; --line:#DCE3DF;
+  --ink:#3A4A45; --muted:#5E6B67; --gold:#E0A23B; --ochre:#8A5A12;
+  --navy:#132131; --navy2:#1D2F44; --steel:#A9B8C8; --steel2:#6F8297; --alert:#C2553F;
+  --stage:#0C1A17; --bar:#122622; --bartext:#DCE8E3;
+  --display:'Domine', Georgia, 'Times New Roman', serif;
+  --body:'Nunito Sans', 'Segoe UI', Arial, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--stage);color:var(--bartext);font-family:var(--body);overflow:hidden;display:flex;flex-direction:column}
+.viewport{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:16px;position:relative}
+.frame{position:relative;overflow:hidden;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.canvas{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+
+/* ---------- slide base ---------- */
+.slide{position:absolute;inset:0;width:1920px;height:1080px;padding:96px 112px 140px;display:flex;flex-direction:column;gap:36px;
+  background:var(--paper);color:var(--ink);font-family:var(--body);opacity:0;visibility:hidden;transition:opacity .45s ease, transform .45s ease;transform:translateY(12px)}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.alt{background:var(--mist)}
+.slide.dark{background:var(--forest);color:#E6EFEB}
+.slide aside{display:none}
+.head{display:flex;flex-direction:column;gap:14px}
+.kicker{font-size:27px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--ochre)}
+.dark .kicker{color:var(--gold)}
+h2.title{font-family:var(--display);font-size:81px;font-weight:700;line-height:1.08;color:var(--forest);text-wrap:balance}
+.dark h2.title{color:var(--paper)}
+.foot{position:absolute;left:112px;bottom:56px;font-size:27px;color:var(--muted)}
+.dark .foot{color:var(--sage)}
+.badge{position:absolute;right:112px;bottom:50px;font-size:27px;font-weight:800;color:var(--forest);background:var(--gold);padding:8px 24px;border-radius:999px}
+.tagline{font-family:var(--display);font-size:45px;line-height:1.25;color:var(--forest)}
+.tagline em{font-style:normal;color:var(--ochre)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:36px 40px;display:flex;flex-direction:column;gap:14px}
+.card h3{font-size:38px;font-weight:800;color:var(--forest)}
+.card p,.card li{font-size:32px;line-height:1.4}
+.row{display:flex;gap:32px}
+.grow{flex:1;min-width:0}
+.chip{display:inline-block;font-size:27px;font-weight:700;padding:8px 18px;border-radius:999px;background:var(--leaf);color:var(--forest)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.lbl{font-size:25px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+ul.clean{list-style:none;display:flex;flex-direction:column;gap:10px}
+ul.clean li{padding-left:30px;position:relative}
+ul.clean li::before{content:"";position:absolute;left:4px;top:.55em;width:12px;height:12px;border-radius:3px;background:var(--gold)}
+
+/* ---------- cover ---------- */
+.cover{justify-content:center;gap:36px;background:var(--forest);color:var(--paper);overflow:hidden}
+.cover .kicker{font-size:34px;letter-spacing:5px;color:var(--gold)}
+.cover h1{font-family:var(--display);font-weight:700;max-width:1250px;display:flex;flex-direction:column;gap:18px}
+.cover h1 .w{font-size:90px;line-height:1.1;color:var(--paper)}
+.cover h1 .n{font-size:127px;line-height:1.05;color:var(--gold)}
+.cover .sub{max-width:1060px;font-size:47px;color:var(--sage)}
+.cover .date{position:absolute;left:128px;bottom:92px;font-size:32px;color:var(--sage)}
+.cover .duo{position:absolute;right:110px;bottom:120px;display:flex;align-items:flex-end;gap:12px}
+.cover .duo{gap:24px;bottom:96px}.cover .duo svg{width:240px;height:240px;border-radius:50%;background:var(--leaf)}
+.cover .ring{position:absolute;right:-260px;top:-260px;width:900px;height:900px;border-radius:50%;border:2px solid rgba(224,162,59,.25)}
+.cover .ring2{position:absolute;right:-120px;top:-120px;width:620px;height:620px;border-radius:50%;border:2px solid rgba(191,216,213,.18)}
+
+/* ---------- slide 2 ---------- */
+.hook{font-family:var(--display);font-style:italic;font-size:40px;line-height:1.3;color:var(--moss);margin-top:4px}
+.stat{width:500px;background:var(--forest);border-radius:20px;padding:44px;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.stat .big{font-family:var(--display);font-size:192px;font-weight:700;line-height:1;color:var(--gold)}
+.stat .cap{font-size:36px;font-weight:800;color:var(--paper)}
+.stat .dom{border-top:1px solid #3F5A54;padding-top:24px;display:flex;flex-direction:column;gap:10px}
+.stat .dom b{font-size:38px;color:var(--paper)}
+.stat .dom span{font-size:27px;line-height:1.4;color:var(--sage)}
+table.cmp{width:100%;border-collapse:collapse;font-size:32px;line-height:1.3}
+table.cmp th{text-align:left;padding:0 16px 16px 0;font-size:25px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--forest)}
+table.cmp th.hl{color:var(--ochre)}
+table.cmp td{padding:17px 16px 17px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.cmp tr:last-child td{border-bottom:none}
+table.cmp td:first-child{font-weight:800;color:var(--forest);width:240px}
+table.cmp td.dim{color:var(--muted)}
+table.cmp td.strong{color:var(--forest)}
+
+/* ---------- slide 3 dreams ---------- */
+.dreams{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto auto;gap:28px}
+.dream{border-radius:28px;padding:34px 38px;display:flex;flex-direction:column;gap:12px;position:relative}
+.dream .wish{font-size:25px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.dream q{font-family:var(--display);font-size:38px;line-height:1.3;quotes:"\201C" "\201D"}
+.dream .tag{font-size:27px;font-weight:800}
+.d1{background:var(--card);border:1px solid var(--line)}
+.d1 .wish{color:var(--ochre)} .d1 q{color:var(--forest)} .d1 .tag{color:var(--moss)}
+.d2{background:var(--leaf)}
+.d2 .wish{color:var(--moss)} .d2 q{color:var(--forest)} .d2 .tag{color:var(--ochre)}
+.d3{background:var(--gold);grid-row:span 2;justify-content:center}
+.d3 .wish{color:var(--forest)} .d3 q{font-size:66px;color:var(--forest)} .d3 .tag{color:var(--forest)}
+.d3 .spark{position:absolute;right:30px;top:26px;width:70px;height:70px}
+.yourturn{display:flex;align-items:center;gap:24px;background:var(--forest);color:var(--paper);border-radius:999px;padding:18px 40px;align-self:flex-start}
+.yourturn b{color:var(--gold);font-size:29px;letter-spacing:2px;text-transform:uppercase}
+.yourturn span{font-family:var(--display);font-size:38px}
+
+/* ---------- personas ---------- */
+.persona{flex:1;min-width:0;border-radius:24px;padding:28px 36px;display:flex;flex-direction:column;gap:12px}
+.persona.sage{background:var(--card);border:1px solid var(--line)}
+.persona.done{background:var(--forest);color:#E6EFEB}
+.pt{display:flex;gap:28px;align-items:center}
+.pt svg{width:130px;height:130px;flex:none;border-radius:50%}
+.sage .pt svg{background:var(--leaf)}
+.done .pt svg{background:#24423B}
+.pname{font-family:var(--display);font-size:63px;font-weight:700;line-height:1.05}
+.sage .pname{color:var(--forest)} .done .pname{color:var(--paper)}
+.prole{font-size:29px;font-weight:700}
+.sage .prole{color:var(--ochre)} .done .prole{color:var(--gold)}
+.pmode{font-size:25px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+.sage .pmode{color:var(--muted)} .done .pmode{color:var(--sage)}
+.done .chip{background:#2B4C44;color:var(--paper)}
+.pline{font-size:31px;line-height:1.4}
+.pline b{font-weight:800}
+.sage .pline b{color:var(--forest)} .done .pline b{color:var(--gold)}
+.bubble{margin-top:auto;align-self:flex-start;font-family:var(--display);font-size:34px;padding:16px 28px;border-radius:24px 24px 24px 6px}
+.sage .bubble{background:var(--leaf);color:var(--forest)}
+.done .bubble{background:var(--gold);color:var(--forest)}
+
+/* ---------- slide 5 matrix ---------- */
+table.mx{width:100%;border-collapse:separate;border-spacing:0;font-size:32px}
+table.mx th{padding:20px 28px;text-align:left;font-size:34px;font-weight:800;color:var(--paper);background:var(--forest)}
+table.mx th:first-child{background:transparent}
+table.mx th:nth-child(2){border-radius:18px 0 0 0}
+table.mx th:last-child{border-radius:0 18px 0 0;background:var(--moss)}
+table.mx th .ico{display:inline-flex;vertical-align:middle;margin-right:14px}
+table.mx th small{display:block;font-size:25px;font-weight:600;color:var(--sage);margin-top:2px}
+table.mx td{padding:18px 28px;background:var(--card);border-bottom:1px solid var(--line);line-height:1.35;vertical-align:middle}
+table.mx td:first-child{background:transparent;font-weight:800;color:var(--forest);padding-left:0;width:340px;border-bottom:1px solid var(--line)}
+table.mx tr.who td:first-child{display:flex;align-items:center;gap:16px}
+table.mx tr.who td:first-child svg{width:64px;height:64px;border-radius:50%;background:var(--leaf);flex:none}
+.yes,.lim{display:inline-flex;align-items:center;gap:12px;font-weight:700}
+.yes::before,.lim::before{content:"";flex:none;width:34px;height:34px;border-radius:50%;background-repeat:no-repeat;background-position:center}
+.yes{color:var(--forest)}
+.yes::before{background-color:var(--moss);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%23FFFFFC' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:22px}
+.lim{color:var(--ochre)}
+.lim::before{background-color:var(--gold);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6v8' stroke='%2316302B' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='18.5' r='1.8' fill='%2316302B'/%3E%3C/svg%3E");background-size:22px}
+
+/* ---------- slide 6 ---------- */
+.context{display:flex;gap:32px;align-items:center;background:var(--forest);border-radius:20px;padding:20px 36px;color:var(--paper)}
+.context .term{font-family:var(--display);font-size:50px;font-weight:700;color:var(--gold);flex:none}
+.context p{font-size:29px;line-height:1.4}
+.context p b{color:var(--gold)}
+.cp{display:grid;grid-template-columns:1.4fr 1fr;gap:32px}
+.cp .card{padding:26px 34px;gap:12px}
+.cp .card p{font-size:29px}
+.cp .ttl{display:flex;align-items:center;gap:18px}
+.cp .ttl svg{width:64px;height:64px;flex:none}
+.cp .ttl h3{font-family:var(--display);font-size:45px;font-weight:700}
+.cp .ttl span{display:block;font-family:var(--body);font-size:25px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.says{display:flex;flex-wrap:wrap;gap:10px}
+.says p{font-family:var(--display);font-size:27px;color:var(--forest);background:var(--mist);border-radius:16px 16px 16px 4px;padding:10px 20px;align-self:flex-start}
+.flow{display:flex;align-items:center;gap:10px;margin-top:auto}
+.flow span{flex:1;text-align:center;font-size:27px;font-weight:800;padding:12px 8px;border-radius:12px;background:var(--leaf);color:var(--forest)}
+.flow span.last{background:var(--gold)}
+.flow i{font-style:normal;color:var(--moss);font-size:32px;font-weight:800}
+
+/* ---------- prompt ---------- */
+.formula{width:700px;display:flex;flex-direction:column;gap:0;border-left:4px solid var(--gold)}
+.formula p{font-size:35px;line-height:1.35;padding:12px 0 12px 28px}
+.formula b{color:var(--forest)}
+
+/* ---------- security (formal) ---------- */
+.sec{background:var(--paper);color:var(--ink)}
+.sec .band{margin:0 -112px;padding:52px 112px 34px;background:var(--navy);display:flex;flex-direction:column;gap:12px;border-bottom:6px solid var(--gold)}
+.sec .kicker{color:var(--steel)}
+.sec h2.title{color:#F4F7FA}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.col{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 30px;display:flex;flex-direction:column;gap:12px;border-top:6px solid var(--line)}
+.col.p1{border-top-color:var(--alert)}
+.col.p2{border-top-color:var(--gold)}
+.col.p3{border-top-color:var(--moss)}
+.col .num{font-size:25px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.col h3{font-size:41px;font-weight:800;color:var(--forest)}
+.col .def{font-size:27px;color:var(--muted);font-style:italic}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.col li{font-size:30px;line-height:1.32;padding-bottom:10px;border-bottom:1px solid var(--line);color:var(--ink)}
+.col li:last-child{border-bottom:none;padding-bottom:0}
+.practice{display:flex;gap:40px;align-items:center;background:var(--mist);padding:22px 32px;border-radius:14px}
+.practice .lbl{color:var(--ochre);flex:none;width:220px}
+.practice ol{list-style:none;display:flex;gap:48px;flex:1}
+.practice li{font-size:30px;line-height:1.35;color:var(--forest);flex:1;counter-increment:p;display:flex;gap:14px}
+.practice li::before{content:counter(p, upper-alpha) ".";font-family:var(--display);font-weight:700;color:var(--ochre)}
+.closing{font-family:var(--display);font-size:38px;color:var(--forest)}
+
+/* ---------- levels ---------- */
+.stairs{flex:1;display:flex;gap:22px;align-items:flex-end}
+.step{flex:1;min-width:0;border-radius:18px;padding:28px 28px;display:flex;flex-direction:column;gap:10px;position:relative}
+.step .lv{font-size:27px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+.step .nm{font-family:var(--display);font-size:43px;font-weight:700;line-height:1.1}
+.step .ds{font-size:27px;line-height:1.4}
+.s1{height:300px;background:var(--leaf);color:var(--forest)} .s1 .lv{color:var(--moss)}
+.s2{height:370px;background:#C3D9D0;color:var(--forest)} .s2 .lv{color:var(--moss)}
+.s3{height:440px;background:var(--gold);color:var(--forest)} .s3 .lv{color:var(--forest)}
+.s4{height:510px;background:var(--moss);color:var(--paper)} .s4 .lv{color:var(--sage)}
+.s5{height:580px;background:var(--forest);color:var(--paper);outline:4px solid var(--gold);outline-offset:-4px} .s5 .lv{color:var(--gold)}
+.step svg{width:72px;height:72px;margin-top:auto}
+.big5{margin-top:auto;font-family:var(--display);font-size:36px;font-weight:700;line-height:1.12;color:#FFFFFC;border-top:2px solid #3F5A54;padding-top:16px}
+
+/* ---------- helper agents ---------- */
+.crew{display:grid;grid-template-columns:440px 1fr;gap:36px;flex:1;min-height:0}
+.boss{background:var(--forest);border-radius:24px;padding:36px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;color:#E6EFEB}
+.boss svg{width:220px;height:220px;border-radius:50%;background:#24423B}
+.boss .pname{font-family:var(--display);font-size:56px;font-weight:700;color:var(--paper)}
+.boss p{font-size:29px;line-height:1.4}
+.boss .bubble{margin-top:auto;align-self:center;background:var(--gold);color:var(--forest);font-family:var(--display);font-size:32px;padding:14px 26px;border-radius:24px}
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.agent{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 32px;display:flex;gap:24px;align-items:center;position:relative}
+.agent svg{width:116px;height:116px;flex:none}
+.agent .an{font-size:36px;font-weight:800;color:var(--forest)}
+.agent .sk{display:inline-flex;align-items:center;gap:10px;margin-top:10px;font-size:25px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ochre)}
+.agent .sk::before{content:"";width:16px;height:16px;border-radius:50%;border:4px solid var(--gold)}
+.agent p{font-size:28px;line-height:1.35;margin-top:6px}
+.agent .live{position:absolute;right:20px;top:18px;font-size:25px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:var(--moss);color:var(--paper);padding:5px 14px;border-radius:999px}
+
+/* ---------- team steps ---------- */
+.steps3{display:flex;gap:20px;align-items:center}
+.steps3 .card{flex:1}
+.steps3 .n{font-family:var(--display);font-size:50px;font-weight:700;color:var(--ochre)}
+.arrow{width:56px;height:30px;flex:none}
+
+/* ---------- hands-on ---------- */
+ol.do{font-size:36px;line-height:1.6;padding-left:44px}
+ol.do li::marker{color:var(--ochre);font-weight:800}
+.tree{width:720px;background:var(--forest);border-radius:20px;padding:44px;display:flex;flex-direction:column;gap:16px}
+.tree .lbl{color:var(--gold)}
+.tree p{font-family:'Courier New', monospace;font-size:32px;line-height:1.45;color:var(--paper)}
+.tree p span{display:block;color:var(--sage);font-family:var(--body);font-size:27px;padding-left:34px}
+
+/* ---------- answers ---------- */
+table.ans{width:100%;border-collapse:collapse;font-size:32px}
+table.ans th{background:var(--forest);color:var(--paper);text-align:left;padding:16px 28px;font-size:27px;letter-spacing:2px;text-transform:uppercase}
+table.ans td{padding:14px 28px;border-bottom:1px solid var(--line)}
+table.ans tr:nth-child(even) td{background:var(--mist)}
+table.ans td:last-child{font-weight:800;color:var(--forest);white-space:nowrap}
+
+/* ---------- close ---------- */
+.challenge{width:760px;background:var(--gold);border-radius:20px;padding:44px;display:flex;flex-direction:column;gap:18px;color:var(--forest)}
+.challenge h3{font-family:var(--display);font-size:50px}
+.challenge ol{font-size:36px;line-height:1.6;padding-left:40px}
+
+/* ---------- controls ---------- */
+.bar{flex:none;display:flex;align-items:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bar);border-top:1px solid #20403A;flex-wrap:wrap}
+.bar button{font:700 14px var(--body);color:var(--bartext);background:#1C3832;border:1px solid #2C524A;border-radius:8px;padding:8px 14px;cursor:pointer}
+.bar button:hover{background:#25463F}
+.bar .back-link{font:700 14px var(--body);color:var(--gold);text-decoration:none;padding:8px 6px;white-space:nowrap}
+.bar .back-link:hover{text-decoration:underline}
+.bar button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.bar button[aria-pressed="true"]{background:var(--gold);color:var(--forest);border-color:var(--gold)}
+.bar .count{font:800 14px var(--body);font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+.bar .stitle{flex:1;min-width:0;font-size:14px;color:var(--sage);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{position:absolute;left:0;bottom:0;height:4px;background:var(--gold);transition:width .3s ease}
+.notes{flex:none;max-height:32vh;overflow:auto;background:#0F201C;border-top:1px solid #20403A;padding:16px 20px;font-size:16px;line-height:1.6;color:#DCE8E3;white-space:pre-line}
+.notes h4{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.outline{position:absolute;inset:16px;z-index:5;background:rgba(12,26,23,.97);border:1px solid #20403A;border-radius:12px;padding:24px;overflow:auto}
+.outline h4{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin:14px 0 8px}
+.outline h4:first-child{margin-top:0}
+.outline ol{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.outline button{width:100%;text-align:left;font:600 15px var(--body);color:var(--bartext);background:#16302B;border:1px solid #2C524A;border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;gap:10px}
+.outline button b{color:var(--gold);font-variant-numeric:tabular-nums;min-width:22px}
+.outline button.cur{border-color:var(--gold)}
+.byline{position:absolute;right:112px;bottom:14px;font-size:25px;letter-spacing:.5px;color:var(--muted)}
+.dark .byline,.cover .byline{color:var(--sage)}
+
+.cover .byline{right:48px;bottom:30px;font-size:25px;color:#8C9C97}
+/* ---------- skill / agent / workflow ---------- */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.term{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 32px;display:flex;flex-direction:column;gap:10px}
+.term .th{display:flex;align-items:center;gap:16px}
+.term .th svg{width:60px;height:60px;flex:none}
+.term .th h3{font-family:var(--display);font-size:52px;font-weight:700;color:var(--forest)}
+.term .def{font-size:31px;line-height:1.38}
+.term .story{font-size:26px;line-height:1.35;color:var(--ochre);font-weight:700;margin-top:auto}
+.wf{background:var(--forest);border-radius:20px;padding:26px 32px 30px;display:flex;flex-direction:column;gap:18px}
+.wf .lbl{color:var(--gold)}
+.wf .line{display:flex;align-items:stretch;gap:12px}
+.wf .st{flex:1;min-width:0;background:#21413A;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.wf .st .who{font-size:26px;font-weight:800;color:var(--gold)}
+.wf .st .act{font-size:27px;line-height:1.32;color:var(--paper)}
+.wf .st .sk{align-self:flex-start;margin-top:auto;font-size:25px;font-weight:800;letter-spacing:.5px;color:var(--forest);background:var(--sage);padding:4px 12px;border-radius:999px}
+.wf .st.end{background:var(--gold)}
+.wf .st.end .who,.wf .st.end .act{color:var(--forest)}
+.wf .ar{align-self:center;color:var(--gold);font-size:38px;font-weight:800}
+.dz{display:grid;grid-template-columns:1.35fr 1fr;gap:36px}
+.rank{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 34px;display:flex;flex-direction:column;gap:6px}
+.rank .lbl{margin-bottom:8px}
+.rk{display:grid;grid-template-columns:36px 360px 1fr 44px;align-items:center;gap:14px;padding:4px 0;border-radius:8px}
+.rk:hover{background:var(--mist)}
+.rn{font-family:var(--display);font-size:29px;font-weight:700;color:var(--muted);text-align:right}
+.rl{font-size:29px;font-weight:700;color:var(--forest)}
+.rt{height:26px;position:relative}
+.rb{position:absolute;left:0;top:0;bottom:0;background:var(--moss);border-radius:0 4px 4px 0}
+.rk.top .rb{background:var(--gold)}
+.rk.top .rn{color:var(--ochre)}
+.rc{font-size:32px;font-weight:800;color:var(--forest);font-variant-numeric:tabular-nums}
+.qs{display:flex;flex-direction:column;gap:20px;min-width:0}
+.qs .dream{padding:24px 32px;gap:8px}
+.qs .d3{flex:1}
+.qs .dream q{font-size:34px}
+.qs .d3 q{font-size:50px}
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.pstep{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 28px;display:flex;flex-direction:column;gap:8px}
+.pstep .n{font-family:var(--display);font-size:40px;font-weight:700;line-height:1;color:var(--ochre)}
+.pstep h3{font-size:32px;font-weight:800;line-height:1.15;color:var(--forest)}
+.pstep p{font-size:26px;line-height:1.35}
+.pstep.cap{background:var(--forest);border-color:var(--forest)}
+.pstep.cap .n{color:var(--gold)} .pstep.cap h3{color:var(--paper)} .pstep.cap p{color:var(--sage)}
+.pstep.bonus{background:var(--gold);border-color:var(--gold)}
+.pstep.bonus .n{font-family:var(--body);font-size:25px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--forest)}
+.pstep.bonus h3,.pstep.bonus p{color:var(--forest)}
+.lib{display:grid;grid-template-columns:520px 1fr;gap:32px}
+.flow3{display:flex;flex-direction:column;gap:14px}
+.flow3 .f{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 26px;display:grid;grid-template-columns:48px 1fr;column-gap:14px;align-items:baseline}
+.flow3 .f .n{grid-row:span 2;font-family:var(--display);font-size:40px;font-weight:700;color:var(--ochre)}
+.flow3 .f h3{font-size:32px;font-weight:800;color:var(--forest)}
+.flow3 .f p:last-child{font-size:26px;line-height:1.35}
+.flow3 .f.last{background:var(--forest);border-color:var(--forest)}
+.flow3 .f.last .n{color:var(--gold)} .flow3 .f.last h3{color:var(--paper)} .flow3 .f.last p:last-child{color:var(--sage)}
+.shelf{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 28px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.assets{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.asset{background:var(--mist);border-radius:14px;padding:18px 22px;display:flex;flex-direction:column;gap:6px;position:relative}
+.asset h3{font-size:29px;font-weight:800;line-height:1.2;color:var(--forest)}
+.asset p:not(.lbl){font-size:25px;line-height:1.35}
+.asset .live{position:absolute;right:14px;top:14px;font-size:25px;font-weight:800;background:var(--moss);color:var(--paper);padding:2px 12px;border-radius:999px}
+.quote{max-width:1100px;border-left:6px solid var(--gold);padding:6px 0 6px 32px;display:flex;flex-direction:column;gap:12px}
+.quote p{font-family:var(--display);font-style:italic;font-size:50px;line-height:1.2;color:var(--paper)}
+.quote cite{font-style:normal;font-size:27px;color:var(--sage)}
+@media (prefers-reduced-motion:reduce){.slide,.prog{transition:none}.slide{transform:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sage" viewBox="0 0 200 200">
+      <path d="M38 200C38 152 68 134 100 134S162 152 162 200Z" fill="#2F6B5A"/>
+      <path d="M84 138l16 10-16 10Zm32 0l-16 10 16 10Z" fill="#E0A23B"/>
+      <rect x="90" y="114" width="20" height="22" fill="#D7A983"/>
+      <circle cx="100" cy="86" r="38" fill="#E9C4A0"/>
+      <path d="M66 96Q100 146 134 96Q132 124 100 130Q68 124 66 96Z" fill="#D5D8D3"/>
+      <circle cx="85" cy="86" r="11" fill="#FFFFFC" stroke="#16302B" stroke-width="4"/>
+      <circle cx="115" cy="86" r="11" fill="#FFFFFC" stroke="#16302B" stroke-width="4"/>
+      <path d="M96 86h8" stroke="#16302B" stroke-width="4"/>
+      <circle cx="86" cy="87" r="3.5" fill="#16302B"/><circle cx="116" cy="87" r="3.5" fill="#16302B"/>
+      <path d="M90 108q10 7 20 0" stroke="#16302B" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M50 48l50-20 50 20-50 20Z" fill="#16302B"/>
+      <path d="M76 52h48v16q-24 8-48 0Z" fill="#16302B"/>
+      <path d="M150 48v28" stroke="#E0A23B" stroke-width="4"/><circle cx="150" cy="80" r="6" fill="#E0A23B"/>
+    </symbol>
+    <symbol id="done" viewBox="0 0 200 200">
+      <path d="M38 200C38 152 68 134 100 134S162 152 162 200Z" fill="#E0A23B"/>
+      <path d="M70 148v52M130 148v52" stroke="#16302B" stroke-width="10"/>
+      <rect x="90" y="114" width="20" height="22" fill="#C98F68"/>
+      <circle cx="100" cy="88" r="38" fill="#DDAA80"/>
+      <circle cx="87" cy="90" r="4.5" fill="#16302B"/><circle cx="113" cy="90" r="4.5" fill="#16302B"/>
+      <path d="M86 104q14 12 28 0" stroke="#16302B" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M60 76Q60 36 100 36T140 76Z" fill="#E0A23B"/>
+      <path d="M100 36v40" stroke="#C98A22" stroke-width="6"/>
+      <rect x="50" y="72" width="100" height="12" rx="6" fill="#C98A22"/>
+      <circle cx="160" cy="164" r="24" fill="#2F6B5A" stroke="#FFFFFC" stroke-width="4"/>
+      <path d="M148 164l8 8 15-17" stroke="#FFFFFC" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="bot" viewBox="0 0 120 120">
+      <path d="M60 10v14" stroke="currentColor" stroke-width="5"/><circle cx="60" cy="9" r="7" fill="#E0A23B"/>
+      <rect x="10" y="44" width="10" height="26" rx="4" fill="currentColor"/><rect x="100" y="44" width="10" height="26" rx="4" fill="currentColor"/>
+      <rect x="18" y="24" width="84" height="66" rx="18" fill="currentColor"/>
+      <rect x="30" y="36" width="60" height="38" rx="10" fill="#16302B"/>
+      <circle cx="47" cy="53" r="7" fill="#BFF0DF"/><circle cx="73" cy="53" r="7" fill="#BFF0DF"/>
+      <rect x="48" y="64" width="24" height="4" rx="2" fill="#BFF0DF"/>
+      <rect x="34" y="94" width="52" height="20" rx="8" fill="currentColor"/>
+      <circle cx="60" cy="104" r="5" fill="#E0A23B"/>
+    </symbol>
+    <symbol id="cup" viewBox="0 0 64 64">
+      <path d="M12 24h34v16a14 14 0 0 1-14 14h-6A14 14 0 0 1 12 40Z" fill="#E0A23B"/>
+      <path d="M46 28h4a7 7 0 0 1 0 14h-4" fill="none" stroke="#E0A23B" stroke-width="4"/>
+      <path d="M22 8q4 5 0 10M32 6q4 5 0 10" stroke="#2F6B5A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="folder" viewBox="0 0 64 64">
+      <path d="M6 16a4 4 0 0 1 4-4h14l6 6h24a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4Z" fill="#2F6B5A"/>
+      <path d="M6 26h52v24a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4Z" fill="#16302B"/>
+      <circle cx="32" cy="40" r="6" fill="#E0A23B"/>
+    </symbol>
+    <symbol id="cloud" viewBox="0 0 40 40">
+      <path d="M11 30a7 7 0 0 1-1-14 10 10 0 0 1 19-2 8 8 0 0 1 1 16Z" fill="#BFD8D5"/>
+    </symbol>
+    <symbol id="desk" viewBox="0 0 40 40">
+      <rect x="4" y="7" width="32" height="21" rx="3" fill="#BFD8D5"/><rect x="8" y="11" width="24" height="13" rx="1" fill="#2F6B5A"/><path d="M15 33h10M20 28v5" stroke="#BFD8D5" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="viewport" id="viewport">
+  <div class="frame" id="frame">
+    <div class="canvas" id="canvas">
+
+<!-- 1 COVER -->
+<section class="slide cover" data-title="Cover" data-part="Welcome">
+  <div class="ring"></div><div class="ring2"></div>
+  <p class="kicker">JAGM AI Clinic</p>
+  <h1><span class="w">Our new team members,</span><span class="n">Dr. Sage &amp; Mr. Done</span></h1>
+  <p class="sub">AI-powered organizations: connected and productive</p>
+  <p class="date">Junior Achievement of Greater Miami · October 2026</p>
+  <div class="duo" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><use href="#sage"/></svg>
+    <svg viewBox="0 0 200 200"><use href="#done"/></svg>
+  </div>
+  <aside>Welcome everyone. Thank you for joining me today for our AI Clinic. I am very happy to share what I have learned about using Claude as a team, and how we will use it here at JAGM. And today we also welcome two new team members: Dr. Sage and Mr. Done. Look at them in the corner. Who do you think they are? Keep that guess in mind. You will meet them properly in a few minutes.</aside>
+</section>
+
+<!-- 2 TEAM PLAN -->
+<section class="slide" data-title="Claude Team at JAGM" data-part="Why we're here">
+  <div class="head"><p class="kicker">The basics</p><h2 class="title">Claude Team at JAGM</h2><p class="hook">Most of us have already tried AI on our own. Now we use it together, as one team.</p></div>
+  <div class="row" style="gap:48px;align-items:stretch">
+    <div class="stat">
+      <div><p class="big">14</p><p class="cap">members on our Team</p></div>
+      <div class="dom"><b>@jamiami.org</b><span>One organization account for JA of Greater Miami. Team plan via Claude for Nonprofits.</span></div>
+    </div>
+    <div class="grow" style="display:flex;flex-direction:column;gap:30px">
+      <table class="cmp">
+        <tr><th></th><th>Personal / Individual</th><th class="hl">JAGM Team</th></tr>
+        <tr><td>Owner</td><td class="dim">You alone</td><td class="strong">JAGM, with an admin</td></tr>
+        <tr><td>Sign-in</td><td class="dim">Any email</td><td class="strong">Your JAGM email</td></tr>
+        <tr><td>Your data</td><td class="dim">Personal settings</td><td class="strong">Business terms, not used for training</td></tr>
+        <tr><td>Teamwork</td><td class="dim">Solo chats</td><td class="strong">Shared projects</td></tr>
+        <tr><td>Tools</td><td class="dim">You set them up</td><td class="strong">Follows JAGM guidelines</td></tr>
+      </table>
+      <p class="tagline" style="font-size:38px"><b style="font-family:var(--body);font-weight:800">Our purpose:</b> one safe, shared place for all JAGM AI work.</p>
+    </div>
+  </div>
+  <p class="foot">JAGM AI Clinic</p>
+  <aside>Many AI trainings teach you to ask AI one question at a time. Very few talk about using AI inside an organization, as a team, with a clear plan. Today we think about AI as a framework built for JAGM.
+
+What is Claude Team? It is the organization version of Claude. JAGM is on the Team plan through the Claude for Nonprofits program. We have 14 members, all under our jamiami.org domain, so Claude knows we are one organization.
+
+What changes for you: JAGM owns the account and an admin manages members, settings and tools. You sign in with your JAGM email. Our work runs under business terms, so our chats and files are not used to train AI models. We share projects, and connected tools follow JAGM guidelines.
+
+The purpose: one safe, shared place for all JAGM AI work.
+
+(Presenter: confirm current Team plan details on Anthropic's site before the clinic.)</aside>
+</section>
+
+<!-- 3 DREAMS -->
+<section class="slide alt" data-title="Our AI Dreams Can Come True" data-part="Why we're here" style="gap:30px;padding-top:96px">
+  <div class="head"><p class="kicker">Icebreaker · 12 of us answered</p><h2 class="title">Our AI Dreams Can Come True</h2></div>
+  <div class="dz">
+    <div class="rank"><p class="lbl">What we want AI to solve · 24 answers, ranked</p>
+<div class="rk top" title="Fundraising & grants: Sponsor prospects, follow-ups, grant editing and research, pitch decks"><span class="rn">1</span><span class="rl">Fundraising & grants</span><span class="rt"><span class="rb" style="width:100.0%"></span></span><span class="rc">6</span></div>
+<div class="rk" title="Automate & save time: Admin tasks, email replies and calendar invites, finishing work faster"><span class="rn">2</span><span class="rl">Automate & save time</span><span class="rt"><span class="rb" style="width:83.3%"></span></span><span class="rc">5</span></div>
+<div class="rk" title="Data entry: Moving data from Jotform to Excel and across platforms"><span class="rn">3</span><span class="rl">Data entry</span><span class="rt"><span class="rb" style="width:50.0%"></span></span><span class="rc">3</span></div>
+<div class="rk" title="Find information: Search emails, Teams, SharePoint and boards; find files"><span class="rn">3</span><span class="rl">Find information</span><span class="rt"><span class="rb" style="width:50.0%"></span></span><span class="rc">3</span></div>
+<div class="rk" title="Create content: Slides, volunteer one-pagers, flow charts"><span class="rn">5</span><span class="rl">Create content</span><span class="rt"><span class="rb" style="width:33.3%"></span></span><span class="rc">2</span></div>
+<div class="rk" title="Reports & dashboards: Social media metrics, event RSVP reports"><span class="rn">5</span><span class="rl">Reports & dashboards</span><span class="rt"><span class="rb" style="width:33.3%"></span></span><span class="rc">2</span></div>
+<div class="rk" title="Get organized: How to start and name a project; personal vs. Team account"><span class="rn">5</span><span class="rl">Get organized</span><span class="rt"><span class="rb" style="width:33.3%"></span></span><span class="rc">2</span></div>
+<div class="rk" title="Big dreams: Global conflict"><span class="rn">8</span><span class="rl">Big dreams</span><span class="rt"><span class="rb" style="width:16.7%"></span></span><span class="rc">1</span></div>
+      <div class="yourturn" style="margin-top:auto;padding:14px 32px;align-self:stretch"><b style="white-space:nowrap">Your turn</b><span>“I wish AI could…”</span></div>
+    </div>
+    <div class="qs">
+      <div class="dream d3"><svg class="spark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2l4 14 14 4-14 4-4 14-4-14-14-4 14-4Z" fill="#16302B"/></svg>
+        <p class="wish">One of us wrote…</p><q>Auto-generate event RSVP reports? That would be a DREAM!!</q></div>
+      <div class="dream d1"><p class="wish">Find information</p><q>Search within our emails, Teams and SharePoint.</q></div>
+      <div class="dream d2"><p class="wish">Wildcard answer</p><q>Global conflict.</q><p class="tag">Let’s start with RSVPs.</p></div>
+    </div>
+  </div>
+  <p class="foot">JAGM AI Clinic · Team survey, Sep 17 – Oct 5, 2026</p>
+  <aside>Let's start with dreams, not technology. Twelve of you answered the survey, with two wishes each: 24 answers. I grouped them and ranked them.
+
+Number 1, fundraising and grants: six answers about sponsor prospects, follow-ups, grant editing, research and pitch decks.
+Number 2, automate and save time: five answers about admin work, email replies, calendar invites and finishing faster.
+Tied at 3: data entry, and finding information in emails, Teams, SharePoint and our boards. Three each.
+Then create content, reports and dashboards, and getting organized: two each.
+And one big dream: global conflict. We may not solve that one today.
+
+My favorite line: auto-generated event RSVP reports "would be a DREAM!!" And one we all feel: finding things. Searching our emails, Teams and SharePoint takes time every day. And our wildcard answer, global conflict: let us start with RSVPs.
+
+Icebreaker: go around the room. Everyone finishes the sentence "I wish AI could..." in one line.</aside>
+</section>
+
+<!-- 4 PERSONAS -->
+<section class="slide" data-title="Meet Dr. Sage & Mr. Done" data-part="Meet the characters">
+  <div class="head"><p class="kicker">Two ways to work with Claude</p><h2 class="title">Meet Dr. Sage &amp; Mr. Done</h2></div>
+  <div class="row" style="flex:1;min-height:0">
+    <div class="persona sage">
+      <div class="pt"><svg viewBox="0 0 200 200" aria-label="Dr. Sage"><use href="#sage"/></svg>
+        <div><p class="pname">Dr. Sage, PhD</p><p class="prole">Your brilliant thinking partner</p><p class="pmode">Chat</p></div></div>
+      <div class="chips"><span class="chip">Brainstorm</span><span class="chip">Spar</span><span class="chip">Check</span><span class="chip">List</span><span class="chip">Explain</span></div>
+      <p class="pline"><b>How he works:</b> talks it through with you. You stay in charge.</p>
+      <p class="pline"><b>Try:</b> “Brainstorm 10 theme ideas for the Bowl-A-Thon.”</p>
+      <p class="bubble">“Have you considered…?”</p>
+    </div>
+    <div class="persona done">
+      <div class="pt"><svg viewBox="0 0 200 200" aria-label="Mr. Done"><use href="#done"/></svg>
+        <div><p class="pname">Mr. Done</p><p class="prole">Your get-it-done assistant</p><p class="pmode">Cowork</p></div></div>
+      <div class="chips"><span class="chip">Open folders</span><span class="chip">Build files</span><span class="chip">Repeat tasks</span><span class="chip">Schedule</span></div>
+      <p class="pline"><b>How he works:</b> takes the task, does the steps, reports back.</p>
+      <p class="pline"><b>Try:</b> “Write a thank-you letter for each sponsor on this list.”</p>
+      <p class="bubble">“Done. It's in your folder.”</p>
+    </div>
+  </div>
+  <p class="tagline">Think it through with <em>Dr. Sage</em>. Get it done with <em>Mr. Done</em>.</p>
+  <p class="foot">JAGM AI Clinic</p>
+  <aside>Meet our two characters. They are both Claude, but they work in two different ways.
+
+Dr. Sage is Chat. He is a PhD-level consultant who sits across the table from you. He brainstorms, spars with you, checks your work, makes lists and explains anything. You stay in charge. You get answers and drafts that you copy out.
+
+Mr. Done is Cowork, as in "get it done". He opens your folders, builds decks, sheets and documents, repeats a task many times and can even run on a schedule. You get finished files in your folder.
+
+Rule of thumb: need an answer or a draft? Ask Dr. Sage. Need a finished file, or the same task many times? Give it to Mr. Done.</aside>
+</section>
+
+<!-- 5 BROWSER VS DESKTOP -->
+<section class="slide alt" data-title="The Thinker's Office & The Workshop" data-part="Meet the characters">
+  <div class="head"><p class="kicker">Browser vs. desktop app</p><h2 class="title">The Thinker's Office &amp; The Workshop</h2></div>
+  <table class="mx">
+    <tr><th></th>
+      <th><span class="ico"><svg width="40" height="40" aria-hidden="true"><use href="#cloud"/></svg></span>Cloud<small>Browser · claude.ai</small></th>
+      <th><span class="ico"><svg width="40" height="40" aria-hidden="true"><use href="#desk"/></svg></span>Desktop app<small>Installed on your computer</small></th></tr>
+    <tr class="who"><td><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#sage"/></svg>Dr. Sage · Chat</td><td><span class="yes">Full Chat, anywhere</span></td><td><span class="yes">Full Chat</span></td></tr>
+    <tr class="who"><td><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#done"/></svg>Mr. Done · Cowork</td><td><span class="lim">Not his workshop</span></td><td><span class="yes">His workshop, right in your folders</span></td></tr>
+    <tr><td>Setup</td><td>Nothing to install</td><td>Install once</td></tr>
+    <tr><td>Your files</td><td>Upload one at a time</td><td>Connect whole folders</td></tr>
+    <tr><td>Best for</td><td>Quick thinking on any computer</td><td>Hands-on work at your desk</td></tr>
+  </table>
+  <p class="tagline">Thinking? <em>Anywhere.</em> Doing? <em>At the workshop.</em></p>
+  <p class="foot">JAGM AI Clinic</p>
+  <aside>Where do you meet our two characters?
+
+Dr. Sage is a thinking man. He is happy anywhere: in the cloud, in your browser at claude.ai, or in the desktop app. All he needs is a good question.
+
+Mr. Done is a workshop guy. His workshop is the desktop app, right next to your folders. That is where he rolls up his sleeves.
+
+It is the same account everywhere, so your chats and projects show up in both. On the go, use the browser. At your desk, open the desktop app.
+
+(Presenter: confirm what Cowork can do in the browser today before the clinic.)</aside>
+</section>
+
+<!-- 6 COFFEE CHAT VS PROJECT ROOM -->
+<section class="slide" data-title="A Coffee Chat vs. A Project Room" data-part="Talk to Dr. Sage well" style="gap:24px;padding-top:90px">
+  <div class="head"><p class="kicker">Conversations and projects</p><h2 class="title">A Coffee Chat vs. A Project Room</h2></div>
+  <div class="context"><p class="term">Context</p><p>Everything Claude knows about your work right now: what you said, the files you shared and the instructions you gave. Like briefing a new colleague: <b>the better the briefing, the better the help.</b></p></div>
+  <div class="cp">
+    <div class="card">
+      <div class="ttl"><svg aria-hidden="true"><use href="#cup"/></svg><h3><span>Conversation</span>A coffee chat</h3></div>
+      <div class="chips"><span class="chip">Ask</span><span class="chip">Brainstorm</span><span class="chip">Discuss</span><span class="chip">Explore</span><span class="chip">Spar</span><span class="chip">Check</span><span class="chip">Quick draft</span></div>
+      <p><b style="color:var(--forest)">Memory:</b> remembers everything in that chat. A new chat starts fresh.</p>
+      <div class="says"><p>“What's a warmer way to say this?”</p><p>“Poke holes in my plan.”</p></div>
+    </div>
+    <div class="card">
+      <div class="ttl"><svg aria-hidden="true"><use href="#folder"/></svg><h3><span>Project</span>A project room</h3></div>
+      <ul class="clean">
+        <li>A goal to achieve</li>
+        <li>Remembers your files</li>
+        <li>Every new chat is already briefed</li>
+        <li>Shared with your team</li>
+      </ul>
+      <div class="flow"><span>Think</span><i>›</i><span>Act</span><i>›</i><span class="last">Deliver</span></div>
+    </div>
+  </div>
+  <p class="tagline" style="font-size:38px">Quick question? <em>Grab a coffee.</em> A goal to achieve? <em>Open a project room.</em></p>
+  <p class="foot">JAGM AI Clinic</p>
+  <aside>First, one important word: context. Context is everything Claude knows about your work right now: what you said, the files you shared and the instructions you gave. It is like briefing a new colleague. The better the briefing, the better the help.
+
+A conversation is a coffee chat with Dr. Sage. You ask, brainstorm, discuss, explore, spar and check ideas. He remembers everything inside that chat, but a new chat starts fresh.
+
+A project is a project room for a goal you want to achieve, like the Golf Invitational. The background files stay in the room, and every new chat in the room is already briefed. You can invite your teammates in. Inside the room the work flows: think with Dr. Sage, act with Mr. Done, deliver the result.</aside>
+</section>
+
+<!-- 7 PROMPTING -->
+<section class="slide alt" data-title="Excellence in Prompting" data-part="Talk to Dr. Sage well">
+  <div class="head"><p class="kicker">How to ask Claude well</p><h2 class="title">Excellence in Prompting</h2></div>
+  <div class="row" style="gap:56px">
+    <div style="display:flex;flex-direction:column;gap:14px"><p class="lbl" style="color:var(--ochre)">The prompt formula</p><div class="formula">
+      <p><b>Role:</b> You are a…</p>
+      <p><b>Expert in:</b> You know a lot about…</p>
+      <p><b>Where:</b> You work at JAGM, which…</p>
+      <p><b>Goal:</b> Your goal is to…</p>
+      <p><b>Tools:</b> Use these files…</p>
+      <p><b>Steps:</b> First… then… ask me before…</p>
+    </div></div>
+    <div class="grow" style="display:flex;flex-direction:column;gap:24px">
+      <div class="card"><p class="lbl">Weak prompt</p><p>“Write a grant.”</p></div>
+      <div class="card" style="border:3px solid var(--moss)"><p class="lbl" style="color:var(--moss)">Strong prompt</p><p>“You are a grant writer at Junior Achievement of Greater Miami. You know youth education funding well. Your goal is a clear, strong first draft for [funder name]. Use the files in this folder. Ask me questions before you start.”</p></div>
+    </div>
+  </div>
+  <p class="foot">JAGM AI Clinic · Always check before you send</p>
+  <p class="badge">You are here · Level 1</p>
+  <aside>Excellence in prompting. Remember context? A prompt is your briefing for Dr. Sage. Most people type one short line, like "write a grant", and Claude has to guess everything. Instead, give a job description: the role, what it is an expert in, where it works, the goal, which files or tools to use, and the steps.
+
+Look at the weak and the strong prompt. Quick try, 3 minutes: take a task from your week and write it with this formula.
+
+Remember: Claude can sound sure and still be wrong. Always check before you send.</aside>
+</section>
+
+<!-- 8 SECURITY -->
+<section class="slide sec" style="gap:30px;padding-top:0" data-title="AI Data and Security" data-part="Stay safe">
+  <div class="band"><p class="kicker">JAGM Guidelines</p><h2 class="title">AI Data and Security</h2><p class="closing" style="color:var(--gold);font-style:italic;font-size:36px">When in doubt, leave it out, and ask first.</p></div>
+  <div class="cols">
+    <div class="col p1"><p class="num">Section 1</p><h3>Prohibited</h3><p class="def">Never enter into Claude</p>
+      <ul><li>Student names and personal details</li><li>Social Security and government ID numbers</li><li>Credit card, bank and payment information</li><li>Passwords and login credentials</li></ul></div>
+    <div class="col p2"><p class="num">Section 2</p><h3>Approval required</h3><p class="def">Consult before use</p>
+      <ul><li>Personal or confidential information about individuals</li><li>Any data you are unsure about</li></ul></div>
+    <div class="col p3"><p class="num">Section 3</p><h3>Permitted</h3><p class="def">Appropriate for use</p>
+      <ul><li>Public information</li><li>General or anonymized figures</li><li>JAGM program and event materials</li></ul></div>
+  </div>
+  <div class="practice"><p class="lbl">Standard practices</p>
+    <ol><li>Use your JAGM Team account for all JAGM work.</li><li>Give Claude access only to the folders a task requires.</li></ol></div>
+  <aside>Now a serious moment. These are our guidelines for data and security.
+
+Section 1, prohibited: never enter student names or personal details, Social Security or government ID numbers, credit card, bank or payment information, or passwords.
+
+Section 2, approval required: personal or confidential information about individuals, and anything you are unsure about. Ask me first.
+
+Section 3, permitted: public information, general or anonymized figures, and JAGM program and event materials.
+
+Two standard practices: always use your JAGM Team account, and only give Claude the folders a task needs.
+
+(Presenter: cover donor information guidance verbally here.)
+
+When in doubt, leave it out, and ask first.</aside>
+</section>
+
+<!-- 9 LEVELS -->
+<section class="slide" data-title="The 5 Levels of Using AI" data-part="Climb the levels">
+  <div class="head"><p class="kicker">Where are you today?</p><h2 class="title">The 5 Levels of Using AI</h2></div>
+  <div class="stairs">
+    <div class="step s1"><p class="lv">Level 1</p><p class="nm">Coffee Chat</p><p class="ds">Ask, brainstorm and check ideas with Dr. Sage</p></div>
+    <div class="step s2"><p class="lv">Level 2</p><p class="nm">Project Room</p><p class="ds">Your files and context stay in one place</p></div>
+    <div class="step s3"><p class="lv">Level 3</p><p class="nm">Helper Agents</p><p class="ds">Mr. Done's crew, each loaded with a skill</p><svg viewBox="0 0 120 120" style="color:#16302B" aria-hidden="true"><use href="#bot"/></svg></div>
+    <div class="step s4"><p class="lv">Level 4</p><p class="nm">Connected</p><p class="ds">Link the project room to tools like Monday.com</p></div>
+    <div class="step s5"><p class="lv">Level 5</p><p class="nm">Shared Projects</p><p class="ds">Share folders, files and results with your team. Everyone starts from the same place.</p><p class="big5">Collective Brain &amp; Crew Power</p></div>
+  </div>
+  <p class="foot">JAGM AI Clinic</p>
+  <aside>This is our map for today, and it uses the words you already know.
+
+Level 1, Coffee Chat: you ask and brainstorm with Dr. Sage.
+Level 2, Project Room: your files and context stay in one place.
+Level 3, Helper Agents: Mr. Done gets a crew, each agent loaded with a skill.
+Level 4, Connected: the project room links to tools we already use, like Monday.com.
+Level 5, Shared Projects: you share project folders with your team, with our files, data and digital assets inside. Everyone starts from the same place, and the results are shared too. This is our Collective Brain and Crew Power: the whole team thinking together, and our crew of agents doing the work together.
+
+Hand-raise poll: who is at Level 1? Level 2? Anyone higher? Today we climb these steps together.</aside>
+</section>
+
+<!-- 10 HELPER AGENTS -->
+<section class="slide alt" data-title="Meet the Helper Agents" data-part="Climb the levels">
+  <div class="head"><p class="kicker">Level 3 · Inside the project room</p><h2 class="title">Meet the Helper Agents</h2></div>
+  <div class="crew">
+    <div class="boss"><svg viewBox="0 0 200 200" aria-label="Mr. Done"><use href="#done"/></svg>
+      <p class="pname">Mr. Done</p><p>Leads the crew and calls the right agent for each job.</p>
+      <p class="bubble">“I've got help.”</p></div>
+    <div class="agents">
+      <div class="agent"><span class="live">Live at JAGM</span><svg viewBox="0 0 120 120" style="color:#2F6B5A" aria-hidden="true"><use href="#bot"/></svg>
+        <div><p class="an">File Naming Agent</p><p class="sk">Skill loaded</p><p>Knows The JAGM Way naming rules</p></div></div>
+      <div class="agent"><svg viewBox="0 0 120 120" style="color:#E0A23B" aria-hidden="true"><use href="#bot"/></svg>
+        <div><p class="an">Letter Agent</p><p class="sk">Skill loaded</p><p>Writes sponsor and volunteer letters in JAGM style</p></div></div>
+      <div class="agent"><svg viewBox="0 0 120 120" style="color:#8A5A12" aria-hidden="true"><use href="#bot"/></svg>
+        <div><p class="an">Grant Agent</p><p class="sk">Skill loaded</p><p>Builds grant proposal drafts</p></div></div>
+      <div class="agent"><svg viewBox="0 0 120 120" style="color:#5E6B67" aria-hidden="true"><use href="#bot"/></svg>
+        <div><p class="an">Deck Agent</p><p class="sk">Skill loaded</p><p>Designs slides for presentations</p></div></div>
+    </div>
+  </div>
+  <p class="tagline" style="font-size:38px">Each agent is loaded with <em>one skill</em>. Mr. Done calls the right one.</p>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Level 3</p>
+  <aside>Let's zoom into Level 3. Inside the project room, Mr. Done does not work alone. He leads a crew of Helper Agents. They are like little robots, and each one is loaded with a skill.
+
+The File Naming Agent knows The JAGM Way naming rules. This one is real: it already works for us today. The Letter Agent writes sponsor and volunteer letters in our style. The Grant Agent builds proposal drafts. The Deck Agent designs slides.
+
+They are project helpers. Mr. Done calls the right one for the job, so the work gets done the JAGM way every time.</aside>
+</section>
+
+<!-- 11 SKILL AGENT WORKFLOW -->
+<section class="slide" data-title="Skills, Agents & Workflows" data-part="Climb the levels" style="gap:24px;padding-top:84px">
+  <div class="head"><p class="kicker">How the crew works together</p><h2 class="title">Skills, Agents &amp; Workflows</h2></div>
+  <div class="trio">
+    <div class="term"><div class="th"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="#E0A23B"/><circle cx="32" cy="32" r="15" fill="none" stroke="#16302B" stroke-width="5"/><path d="M26 32l4 4 8-9" stroke="#16302B" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Skill</h3></div>
+      <p class="def">A saved how-to: rules and examples for one kind of task, written once and reused.</p>
+      <p class="story">The badge a Helper Agent wears</p></div>
+    <div class="term"><div class="th"><svg viewBox="0 0 120 120" style="color:#2F6B5A" aria-hidden="true"><use href="#bot"/></svg><h3>Agent</h3></div>
+      <p class="def">A helper that takes a goal, plans the steps, uses files and tools, and works until it's done.</p>
+      <p class="story">Mr. Done and his Helper Agents</p></div>
+    <div class="term"><div class="th"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="24" width="14" height="16" rx="4" fill="#2F6B5A"/><rect x="25" y="24" width="14" height="16" rx="4" fill="#2F6B5A"/><rect x="46" y="24" width="14" height="16" rx="4" fill="#E0A23B"/><path d="M18 32h7M39 32h7" stroke="#16302B" stroke-width="3"/></svg><h3>Workflow</h3></div>
+      <p class="def">A repeatable order of steps: who does what, and who passes work to whom.</p>
+      <p class="story">The game plan Mr. Done follows</p></div>
+  </div>
+  <div class="wf"><p class="lbl">Example workflow · Golf Invitational thank-you letters</p>
+    <div class="line">
+      <div class="st"><p class="who">Mr. Done</p><p class="act">Opens the sponsor list in the project room</p></div><span class="ar">›</span>
+      <div class="st"><p class="who">Letter Agent</p><p class="act">Drafts a letter for each sponsor</p><span class="sk">JAGM letter style</span></div><span class="ar">›</span>
+      <div class="st"><p class="who">File Naming Agent</p><p class="act">Names every file correctly</p><span class="sk">The JAGM Way</span></div><span class="ar">›</span>
+      <div class="st end"><p class="who">Mr. Done</p><p class="act">“Done. 20 letters in your folder.”</p></div>
+    </div>
+  </div>
+  <p class="tagline" style="font-size:41px">A skill is <em>what you know</em>. An agent is <em>who does it</em>. A workflow is <em>the order it happens in</em>.</p>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Level 3</p>
+  <aside>Three words you will hear a lot: skill, agent and workflow.
+
+A skill is a saved how-to: the rules and examples for one kind of task, written once and reused every time. In our story, it is the badge a Helper Agent wears.
+
+An agent is a helper that takes a goal, plans the steps, uses files and tools, and keeps working until it is done. Mr. Done is our lead agent, and the Helper Agents are his specialists.
+
+A workflow is the order the work happens in: who does what, and who hands work to whom.
+
+Example: Golf Invitational thank-you letters. Mr. Done opens the sponsor list. The Letter Agent drafts a letter for each sponsor using our letter-style skill. The File Naming Agent names every file with The JAGM Way skill. Mr. Done saves them and says: done, 20 letters in your folder. Next year, we run the same workflow again with one sentence.
+
+A skill is what you know. An agent is who does it. A workflow is the order it happens in.</aside>
+</section>
+
+<!-- 12 LEVEL 5 PROJECT ROOM -->
+<section class="slide" data-title="Your Project Room, Two Months From Now" data-part="Practice">
+  <div class="head"><p class="kicker">Where we're headed · Level 5</p><h2 class="title">Your Project Room, Two Months From Now</h2></div>
+  <div class="path"><div class="pstep"><p class="n">1</p><h3>Create your project</h3><p>One room for one goal</p></div><div class="pstep"><p class="n">2</p><h3>Define your goals</h3><p>What success looks like</p></div><div class="pstep"><p class="n">3</p><h3>Define your workflows</h3><p>The game plan, step by step</p></div><div class="pstep"><p class="n">4</p><h3>Add files and notes</h3><p>The room's memory</p></div><div class="pstep cap"><p class="n">5</p><h3>Add a Project Captain</h3><p>The head agent: knows the goals, keeps the crew on track</p></div><div class="pstep"><p class="n">6</p><h3>Add Helper Agents</h3><p>Each one with a loaded skill</p></div><div class="pstep"><p class="n">7</p><h3>Share with your team</h3><p>Everyone starts from the same place</p></div><div class="pstep bonus"><p class="n">Bonus</p><h3>Share your results</h3><p>Outputs, artifacts and digital assets</p></div></div>
+  <p class="tagline">One room, one goal, one crew: <em>Collective Brain &amp; Crew Power.</em></p>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Goal · Level 5</p>
+  <aside>This is where we are going. Not today, but imagine yourself two months from now.
+
+One: create your project, one room for one goal. Two: define your goals, what success looks like. Three: define your workflows, the game plan step by step. Four: add your files and notes, the room's memory.
+
+Five: add a Project Captain. This is the head agent of the room. It knows the goals and the rules, and every Helper Agent follows it. Six: add Helper Agents, each with a loaded skill. Seven: share the room with your team, so everyone starts from the same place.
+
+Bonus: share your results too: outputs, artifacts and other digital assets, so the whole team can reuse them.
+
+One room, one goal, one crew. That is Collective Brain and Crew Power. Now let's take the first step together.</aside>
+</section>
+
+<!-- 12 HANDS-ON 1 -->
+<section class="slide alt" data-title="Hands-on 1: Let's create your own project folder" data-part="Practice">
+  <div class="head"><p class="kicker">Hands-on 1 · Solo · 15 minutes</p><h2 class="title">Let's create your own project folder</h2></div>
+  <div class="path" style="grid-template-columns:repeat(3,1fr)"><div class="pstep"><p class="lbl" style="color:var(--ochre)">Name</p><h3>AI_DESK</h3><p>Your daily task manager, in the desktop app</p></div><div class="pstep"><p class="lbl" style="color:var(--ochre)">Goals</p><h3>Stay on top of my day</h3><p>Tasks, reminders and deadlines in one place</p></div><div class="pstep"><p class="lbl" style="color:var(--ochre)">Workflows</p><h3>Morning and evening</h3><p>Morning: plan today. Evening: what's done, what moves to tomorrow</p></div><div class="pstep"><p class="lbl" style="color:var(--ochre)">Files & notes</p><h3>Your task list</h3><p>This week's tasks and upcoming deadlines</p></div><div class="pstep"><p class="lbl" style="color:var(--ochre)">Ask</p><h3>Your assistant</h3><p>“What should I focus on today?” “What's due this week?”</p></div><div class="pstep cap"><p class="lbl" style="color:var(--gold)">Share</p><h3>Just for you</h3><p>A solo folder. Not shared with the team</p></div></div>
+  <div class="yourturn" style="padding:16px 36px"><b style="white-space:nowrap">Your 1-week challenge</b><span>Write your daily tasks in AI_DESK every day for a week.</span></div>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Start here · Level 2</p>
+  <aside>Now your turn, and this one is just for you. Everyone works on their own, so we don't need to agree as a room.
+
+Open the desktop app and create a project folder called AI_DESK. This is your daily task manager, your personal assistant.
+
+Fill it in with me: the name is AI_DESK. The goal is to stay on top of your day: tasks, reminders and deadlines in one place. The workflow is simple: in the morning, plan today; in the evening, check what is done and what moves to tomorrow. Add your task list for this week and your upcoming deadlines. Then ask it: what should I focus on today? What is due this week?
+
+This folder is solo. It is not shared with the team.
+
+Your one-week challenge: write your daily tasks in AI_DESK every day for a week, and see how your assistant gets to know your work.</aside>
+</section>
+
+<!-- 13 HANDS-ON 2 -->
+<section class="slide" data-title="Hands-on 2: Rising Woman event room" data-part="Practice" style="gap:28px;padding-top:88px">
+  <div class="head"><p class="kicker">Hands-on 2 · Team · 15 minutes</p><h2 class="title">An event project room: Rising Woman</h2><p class="hook" style="font-size:34px">50 women CEOs and 50 middle and high school girls: one day of activities, conversations and presentations.</p></div>
+  <div class="path" style="grid-template-columns:repeat(3,1fr);gap:20px"><div class="pstep" style="padding:20px 26px"><p class="lbl" style="color:var(--ochre)">Name</p><h3>Rising Woman 2026</h3><p>One shared room for the event team</p></div><div class="pstep" style="padding:20px 26px"><p class="lbl" style="color:var(--ochre)">Goals</p><h3>A memorable day for 100</h3><p>Smooth activities, conversations and presentations</p></div><div class="pstep" style="padding:20px 26px"><p class="lbl" style="color:var(--ochre)">Files & notes</p><h3>Last year's event</h3><p>Plan, timeline, budget, recap and emails (no student data)</p></div><div class="pstep" style="padding:20px 26px"><p class="lbl" style="color:var(--ochre)">Bottlenecks</p><h3>What was hard last year</h3><p>For example: pairing CEOs and girls, RSVPs, the day's schedule</p></div><div class="pstep" style="padding:20px 26px"><p class="lbl" style="color:var(--ochre)">Ask</p><h3>Your event assistant</h3><p>“What are our next steps?” “What should we change?” “Make an RSVP report.”</p></div><div class="pstep cap" style="padding:20px 26px"><p class="lbl" style="color:var(--gold)">Share</p><h3>The event team</h3><p>Everyone can add files, share updates and ask anything</p></div></div>
+  <div class="practice" style="padding:16px 28px"><p class="lbl" style="width:auto">Note</p><p style="font-size:28px;color:var(--forest)">These are trial examples. We adjust them as we learn, all the time.</p></div>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Shared room · Level 2 → 5</p>
+  <aside>Now we work as a team on a real program: Rising Woman. Fifty women CEOs and fifty middle and high school girls spend a day together with activities, conversations and presentations.
+
+We create one project room for the upcoming event and share it with the event team. Name it Rising Woman 2026. The goal: a memorable day for 100 people. Upload what we have from last year: the plan, timeline, budget, recap and emails. Remember our guidelines: no student data.
+
+Then describe the bottlenecks from last year. For example: pairing CEOs and girls, RSVPs, or the schedule of the day. Now ask the room: What are our next steps? What should we change from last year? Make an RSVP report.
+
+Everyone on the event team can come to this room, add files, share updates and ask anything.
+
+Important: these are trial examples. We will adjust them as we learn, all the time.</aside>
+</section>
+
+<!-- 14b LIVE EXAMPLE -->
+<section class="slide alt" data-title="Live example: JAGM Operating Asset Library" data-part="Practice">
+  <div class="head"><p class="kicker">Live example · Level 5 today</p><h2 class="title">JAGM Operating Asset Library</h2><p class="hook" style="font-size:34px">One shared folder where we collect the digital assets that run our new system.</p></div>
+  <div class="lib">
+    <div class="flow3">
+      <div class="f"><p class="n">1</p><h3>Create</h3><p>I built a shared project folder</p></div>
+      <div class="f"><p class="n">2</p><h3>Share</h3><p>I shared it with the whole organization</p></div>
+      <div class="f last"><p class="n">3</p><h3>Use</h3><p>Anyone at JAGM can come in and use it</p></div>
+    </div>
+    <div class="shelf"><p class="lbl" style="color:var(--ochre)">What's inside</p><div class="assets"><div class="asset"><p class="lbl">Skill</p><h3>JAGM file naming</h3><p>Claude names files The JAGM Way, for anyone who uses it</p><span class="live">Live skill</span></div><div class="asset"><p class="lbl">Playbook</p><h3>JAGM Visual Asset Playbook</h3><p>How we make and use visuals</p></div><div class="asset"><p class="lbl">Visual</p><h3>File Naming Quick Reference</h3><p>The naming rules on one page</p></div><div class="asset"><p class="lbl">Cheat sheet</p><h3>Projects & Privacy</h3><p>How to use Claude Team safely</p></div></div></div>
+  </div>
+  <p class="tagline">Build it once. Share it once. <em>Everyone benefits.</em></p>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Live demo · Level 5</p>
+  <aside>Now a real example, live. This is Level 5 working at JAGM today.
+
+I created a shared project folder called the JAGM Operating Asset Library. Then I shared it with the whole organization. In it, we collect the digital assets we use to build our new system.
+
+What is inside? A skill for our file naming convention: once you use it, Claude names files The JAGM Way for you. A visual asset playbook. A one-page naming quick reference. And a cheat sheet on projects and privacy.
+
+Anyone at JAGM can come to this folder and use my skill or any of these assets if they want. Build it once, share it once, and everyone benefits. That is Collective Brain and Crew Power.
+
+(Presenter: open the library live here.)</aside>
+</section>
+
+<!-- 14 ANSWERS -->
+<section class="slide alt" data-title="You asked. Here is how." data-part="Practice" style="gap:32px">
+  <div class="head"><p class="kicker">Back to your dreams</p><h2 class="title">You asked. Here is how.</h2></div>
+  <table class="ans">
+    <tr><th>Your dream (votes)</th><th>Level you need</th></tr>
+    <tr><td>Fundraising &amp; grants: prospects, follow-ups, grant editing (6)</td><td>Level 2–3</td></tr>
+    <tr><td>Automate &amp; save time: admin, email replies, invites (5)</td><td>Level 3–4</td></tr>
+    <tr><td>Data entry: Jotform, Excel and other platforms (3)</td><td>Level 4 · Connected</td></tr>
+    <tr><td>Find information: emails, Teams, SharePoint, files (3)</td><td>Level 4 · Connected</td></tr>
+    <tr><td>Create content: slides, one-pagers, flow charts (2)</td><td>Level 2–3 (5 to share)</td></tr>
+    <tr><td>Reports &amp; dashboards: RSVPs, social media (2)</td><td>Level 4–5</td></tr>
+    <tr><td>Get organized: start and name a project (2)</td><td>Level 2 (done today!)</td></tr>
+  </table>
+  <p class="foot">JAGM AI Clinic</p>
+  <p class="badge">Next · Levels 4 and 5</p>
+  <aside>Remember your AI dreams from the start? Here is the level each one needs. Almost nothing on this list is solved with a simple coffee chat. That is why we climbed the levels today. And the RSVP report someone called "a DREAM"? Let me show you what that looks like.
+
+(Presenter: run or play the RSVP report or dashboard demo here.)</aside>
+</section>
+
+<!-- 15 CLOSE -->
+<section class="slide cover closing-slide" data-title="Thank you" data-part="Practice">
+  <div class="ring"></div><div class="ring2"></div>
+  <p class="kicker">JAGM AI Clinic</p>
+  <h1><span class="w">Thank you!</span><span class="n">Questions &amp; Answers</span></h1>
+  <blockquote class="quote"><p>“Well done is better than well said.”</p><cite>Benjamin Franklin, <i>Poor Richard's Almanack</i>, 1737</cite></blockquote>
+  <div class="duo" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><use href="#sage"/></svg>
+    <svg viewBox="0 0 200 200"><use href="#done"/></svg>
+  </div>
+  <aside>Thank you all for your time, your survey answers and your energy today. Dr. Sage and Mr. Done are officially part of the team now.
+
+I will leave you with one line from Benjamin Franklin: "Well done is better than well said." Today we said a lot. Now let's do it, one project folder at a time.
+
+Now, what questions do you have?</aside>
+</section>
+
+    </div>
+  </div>
+  <div class="outline" id="outline" hidden></div>
+</div>
+
+<div class="bar" style="position:relative">
+  <a class="back-link" href="/">← All Projects</a>
+  <button id="prev" type="button" aria-label="Previous slide">‹ Prev</button>
+  <span class="count" id="count">1 / 15</span>
+  <button id="next" type="button" aria-label="Next slide">Next ›</button>
+  <span class="stitle" id="stitle"></span>
+  <button id="btnOutline" type="button" aria-pressed="false">Outline</button>
+  <button id="btnNotes" type="button" aria-pressed="false">Notes</button>
+  <button id="btnFull" type="button">Full screen</button>
+  <div class="prog" id="prog"></div>
+</div>
+<div class="notes" id="notes" hidden><h4>Speaker notes</h4><div id="notesText"></div></div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  slides.forEach(function(s){var b=document.createElement('p');b.className='byline';b.textContent='Ahmet Caner';s.appendChild(b);});
+  var vp=document.getElementById('viewport'),frame=document.getElementById('frame'),canvas=document.getElementById('canvas');
+  var count=document.getElementById('count'),stitle=document.getElementById('stitle'),prog=document.getElementById('prog');
+  var notes=document.getElementById('notes'),notesText=document.getElementById('notesText'),outline=document.getElementById('outline');
+  var bN=document.getElementById('btnNotes'),bO=document.getElementById('btnOutline');
+  var cur=0;
+  function fit(){
+    var cs=getComputedStyle(vp);
+    var w=vp.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    var h=vp.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+    var s=Math.max(0.05,Math.min(w/1920,h/1080));
+    frame.style.width=(1920*s)+'px';frame.style.height=(1080*s)+'px';
+    canvas.style.transform='scale('+s+')';
+  }
+  function show(i,push){
+    cur=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(function(s,k){s.classList.toggle('active',k===cur);s.setAttribute('aria-hidden',k===cur?'false':'true');});
+    count.textContent=(cur+1)+' / '+slides.length;
+    stitle.textContent=slides[cur].dataset.part+' · '+slides[cur].dataset.title;
+    prog.style.width=((cur+1)/slides.length*100)+'%';
+    var a=slides[cur].querySelector('aside');notesText.textContent=a?a.textContent.trim():'No notes.';
+    [].forEach.call(outline.querySelectorAll('button'),function(b,k){b.classList.toggle('cur',k===cur);});
+    if(push!==false){try{history.replaceState(null,'','#slide-'+(cur+1));}catch(e){}}
+  }
+  // outline
+  var html='',part='';
+  slides.forEach(function(s,k){
+    if(s.dataset.part!==part){if(part)html+='</ol>';part=s.dataset.part;html+='<h4>'+part+'</h4><ol>';}
+    html+='<li><button type="button" data-k="'+k+'"><b>'+(k+1)+'</b><span>'+s.dataset.title.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span></button></li>';
+  });
+  outline.innerHTML=html+'</ol>';
+  outline.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;show(+b.dataset.k);toggleOutline(false);});
+  function toggleOutline(v){outline.hidden=!v;bO.setAttribute('aria-pressed',v?'true':'false');}
+  function toggleNotes(v){notes.hidden=!v;bN.setAttribute('aria-pressed',v?'true':'false');fit();}
+  document.getElementById('prev').onclick=function(){show(cur-1);};
+  document.getElementById('next').onclick=function(){show(cur+1);};
+  bO.onclick=function(){toggleOutline(outline.hidden);};
+  bN.onclick=function(){toggleNotes(notes.hidden);};
+  document.getElementById('btnFull').onclick=function(){
+    try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}}catch(e){}
+  };
+  frame.addEventListener('click',function(e){
+    var r=frame.getBoundingClientRect();if(e.clientX-r.left<r.width*0.3)show(cur-1);else show(cur+1);
+  });
+  var tx=null;
+  frame.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+  frame.addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>40)show(cur+(d<0?1:-1));tx=null;});
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest&&e.target.closest('input,textarea'))return;
+    var k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '){e.preventDefault();show(cur+1);}
+    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();show(cur-1);}
+    else if(k==='Home')show(0);else if(k==='End')show(slides.length-1);
+    else if(k==='n'||k==='N')toggleNotes(notes.hidden);
+    else if(k==='o'||k==='O')toggleOutline(outline.hidden);
+    else if(k==='Escape')toggleOutline(false);
+    else if(k==='f'||k==='F')document.getElementById('btnFull').click();
+  });
+  window.addEventListener('resize',fit);
+  var m=/^#slide-(\d+)$/.exec(location.hash||'');
+  fit();show(m?(+m[1]-1):0,false);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+})();
+</script>
+
+</body></html>
